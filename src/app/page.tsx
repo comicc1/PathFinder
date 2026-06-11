@@ -59,8 +59,7 @@ export default function Home() {
         <div className={styles.intro}>
           <h1>PathFinder</h1>
           <p>
-            Upload your resume and get instant AI-powered feedback to help you
-            land your dream job.
+            Upload your resume here.
           </p>
         </div>
 

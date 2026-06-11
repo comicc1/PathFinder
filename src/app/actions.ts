@@ -54,8 +54,8 @@ async function getAiFeedback(resumeText: string) {
     1. Overall impact and professional tone.
     2. Strengths and achievements.
     3. Areas for improvement (layout, wording, missing sections).
-    4. Keyword optimization for Applicant Tracking Systems (ATS).
-    5. A brief summary of recommendations.
+    4. A brief summary of recommendations. 
+    Make it short and concise and dont generate asterisks or bullet points since the formatting may be lost. Focus on providing actionable feedback that can help improve the resume's effectiveness in landing job interviews.
 
     Resume Text:
     ${trimmedText}
