@@ -4,6 +4,23 @@ import { useState } from "react";
 import styles from "./page.module.css";
 import { analyzeResume } from "./actions";
 
+async function extractTextFromPdf(file: File) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdfjs = await import('pdfjs-dist/legacy/build/pdf.js');
+  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+  const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
+  const pdf = await loadingTask.promise;
+  const maxPages = pdf.numPages || 0;
+  const pageTexts: string[] = [];
+  for (let i = 1; i <= maxPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const strings = content.items.map((s: any) => (s.str || '')).join(' ');
+    pageTexts.push(strings);
+  }
+  return pageTexts.join('\n\n');
+}
+
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -14,10 +31,15 @@ export default function Home() {
     setLoading(true);
     setError(null);
     setFeedback(null);
-
     const formData = new FormData(event.currentTarget);
-    
+
     try {
+      const file = (event.currentTarget.querySelector('#resume') as HTMLInputElement).files?.[0];
+      if (!file) throw new Error('No file selected');
+      const text = await extractTextFromPdf(file);
+      formData.delete('resume');
+      formData.append('resumeText', text);
+
       const result = await analyzeResume(formData);
       if (result.success) {
         setFeedback(result.feedback || "No feedback received");
