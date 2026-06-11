@@ -1,34 +1,111 @@
 "use server";
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import fs from "fs";
-import path from "path";
-import os from "os";
+const GROQ_MODEL = "llama-3.3-70b-versatile";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+function getGroqApiKey() {
+  const apiKey = process.env.GROQ_API_KEY?.trim();
+  if (!apiKey) {
+    throw new Error(
+      "Missing GROQ_API_KEY. Put it in .env.local at the project root, then restart npm run dev."
+    );
+  }
+  return apiKey;
+}
+
+function buildLocalResumeFeedback(resumeText: string, cause: string) {
+  const normalized = resumeText.toLowerCase();
+  const sectionChecks = [
+    ["experience", "work experience / employment history"],
+    ["education", "education"],
+    ["skills", "skills"],
+    ["projects", "projects"],
+    ["summary", "summary / profile"],
+    ["certifications", "certifications"],
+  ] as const;
+
+  const presentSections = sectionChecks
+    .filter(([keyword]) => normalized.includes(keyword))
+    .map(([, label]) => label);
+
+  const missingSections = sectionChecks
+    .filter(([keyword]) => !normalized.includes(keyword))
+    .map(([, label]) => label);
+
+  const bulletCount = (resumeText.match(/^[\s>*-]*[•\-\*\u2022]/gm) || []).length;
+  const suggestionLines = [
+    `Groq analysis was unavailable because of a quota/rate-limit error: ${cause}.`,
+    "This fallback review was generated locally so your app still returns useful feedback.",
+    "",
+    `Detected sections: ${presentSections.length > 0 ? presentSections.join(", ") : "none detected"}.`,
+    `Missing or unclear sections: ${missingSections.length > 0 ? missingSections.join(", ") : "none obvious"}.`,
+    `Bullet-point usage: ${bulletCount > 0 ? `${bulletCount} bullets found` : "few or none found"}.`,
+    "",
+  ];
+
+  return suggestionLines.join("\n");
+}
+
+async function getAiFeedback(resumeText: string) {
+  const trimmedText = resumeText.length > 50000 ? resumeText.slice(0, 50000) + "\n\n[TRUNCATED]" : resumeText;
+  const prompt = `
+    You are an expert career coach and professional resume reviewer.
+    I will provide you with the text extracted from a resume.
+    Please analyze it and provide feedback on:
+    1. Overall impact and professional tone.
+    2. Strengths and achievements.
+    3. Areas for improvement (layout, wording, missing sections).
+    4. Keyword optimization for Applicant Tracking Systems (ATS).
+    5. A brief summary of recommendations.
+
+    Resume Text:
+    ${trimmedText}
+  `;
+
+  try {
+    const apiKey = getGroqApiKey();
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        temperature: 0.4,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Groq API error ${response.status}: ${errorBody}`);
+    }
+
+    const data = await response.json();
+    const text = data?.choices?.[0]?.message?.content;
+    if (!text) {
+      throw new Error("Groq returned no analysis text");
+    }
+    return text;
+  } catch (error: any) {
+    const message = String(error?.message || error);
+    if (message.includes("429") || message.toLowerCase().includes("quota") || message.toLowerCase().includes("rate")) {
+      return buildLocalResumeFeedback(resumeText, message);
+    }
+    throw error;
+  }
+}
 
 export async function analyzeResume(formData: FormData) {
   // If client extracted text was provided, prefer it
   const clientText = formData.get("resumeText") as string | null;
   if (clientText && clientText.trim().length > 0) {
-    const trimmedText = clientText.length > 50000 ? clientText.slice(0, 50000) + "\n\n[TRUNCATED]" : clientText;
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    const prompt = `
-      You are an expert career coach and professional resume reviewer. 
-      I will provide you with the text extracted from a resume. 
-      Please analyze it and provide feedback on:
-      1. Overall impact and professional tone.
-      2. Strengths and achievements.
-      3. Areas for improvement (layout, wording, missing sections).
-      4. Keyword optimization for Applicant Tracking Systems (ATS).
-      5. A brief summary of recommendations.
-
-      Resume Text:
-      ${trimmedText}
-    `;
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const text = await getAiFeedback(clientText);
     return { success: true, feedback: text };
   }
 
@@ -55,20 +132,15 @@ export async function analyzeResume(formData: FormData) {
       if (!resumeText || resumeText.trim().length === 0) {
         throw new Error("Could not extract text from the PDF");
       }
-      const MAX_CHARS = 50000;
-      const trimmedText = resumeText.length > MAX_CHARS ? resumeText.slice(0, MAX_CHARS) + "\n\n[TRUNCATED]" : resumeText;
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-      const prompt = `You are an expert career coach and professional resume reviewer.\n\nResume Text:\n${trimmedText}`;
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
+      const text = await getAiFeedback(resumeText);
       return { success: true, feedback: text };
     } catch (err: any) {
       console.error("pdf-parse extraction failed, error:", err);
-      const tempDir = os.tmpdir();
-      const tempFilePath = path.join(tempDir, `resume_${Date.now()}.pdf`);
-      fs.writeFileSync(tempFilePath, buffer);
-      return { success: false, error: "PDF extraction failed on server. Saved temporary file at " + tempFilePath };
+      const cause = String(err?.message || err);
+      if (clientText && clientText.trim().length > 0) {
+        return { success: true, feedback: buildLocalResumeFeedback(clientText, cause) };
+      }
+      return { success: false, error: "PDF extraction failed on server: " + cause };
     }
   } catch (error: any) {
     console.error("Error analyzing resume:", error);
