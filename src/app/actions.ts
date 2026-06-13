@@ -55,7 +55,9 @@ async function getAiFeedback(resumeText: string) {
     2. Strengths and achievements.
     3. Areas for improvement (layout, wording, missing sections).
     4. A brief summary of recommendations. 
-    Make it short and concise and dont generate asterisks or bullet points since the formatting may be lost. Focus on providing actionable feedback that can help improve the resume's effectiveness in landing job interviews.
+    Make it short and concise. Focus on providing actionable feedback that can help improve the resume's effectiveness in landing job interviews.
+    make sure it is in bullet form and keep it under 200 words.
+    keep the symbols for the bullet points consistent and use a professional tone.
 
     Resume Text:
     ${trimmedText}

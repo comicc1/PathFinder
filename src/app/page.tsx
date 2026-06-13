@@ -57,36 +57,8 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <div className={styles.intro}>
-          <h1>PathFinder</h1>
-          <p>
-            Upload your resume here.
-          </p>
+          <h1>PathFinder.</h1>
         </div>
-
-        <section className={styles.uploadSection}>
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <div className={styles.fileInputContainer}>
-              <label htmlFor="resume" className={styles.label}>
-                Upload Resume (PDF)
-              </label>
-              <input
-                type="file"
-                id="resume"
-                name="resume"
-                accept=".pdf"
-                required
-                className={styles.fileInput}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className={styles.submitButton}
-            >
-              {loading ? "Analyzing..." : "Analyze Resume"}
-            </button>
-          </form>
-        </section>
 
         {error && (
           <section className={styles.errorSection}>
@@ -104,7 +76,41 @@ export default function Home() {
             </div>
           </section>
         )}
+
+        <section className={styles.uploadSection}>
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <div className={styles.fileInputContainer}>
+              <label htmlFor="resume" className={styles.label}>
+                Resume (PDF format)
+              </label>
+              <input
+                type="file"
+                id="resume"
+                name="resume"
+                accept=".pdf"
+                required
+                className={styles.fileInput}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className={styles.submitButton}
+            >
+              {loading ? "Analyzing Career Path..." : "Analyze Resume"}
+            </button>
+          </form>
+        </section>
       </main>
+      <footer style={{ 
+        padding: '40px 20px', 
+        textAlign: 'center', 
+        color: 'var(--color-secondary)',
+        fontSize: '14px',
+        fontWeight: '500'
+      }}>
+        © {new Date().getFullYear()} PathFinder. All rights reserved.
+      </footer>
     </div>
   );
 }
