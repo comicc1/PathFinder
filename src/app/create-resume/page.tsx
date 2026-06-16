@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import styles from "../page.module.css";
 import localStyles from "./page.module.css";
 
@@ -63,6 +64,16 @@ export default function CreateResumePage() {
 
   return (
     <div className={styles.page}>
+      {/* Header */}
+      <header className={styles.pageHeader}>
+        <Link href="/" className={styles.backButton}>
+          ← Back
+        </Link>
+        <div>
+          <h1 className={styles.pageTitle}>Create Resume</h1>
+        </div>
+      </header>
+
       <main className={localStyles.main}>
         <div className={localStyles.header}>
           <h1 className={localStyles.title}>Create Resume</h1>
