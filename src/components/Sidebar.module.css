@@ -1,6 +1,6 @@
 .sidebar {
   width: 240px;
-  background-color: var(--color-primary);
+  background: linear-gradient(180deg, var(--color-primary) 0%, #0f1f3e 100%);
   color: var(--color-white);
   height: 100vh;
   position: fixed;
@@ -11,6 +11,7 @@
   padding: 32px 24px;
   z-index: 100;
   transition: transform 0.3s ease;
+  box-shadow: 4px 0 20px -8px rgba(26, 50, 99, 0.15);
 }
 
 .logo {
@@ -55,6 +56,7 @@
   color: rgba(255, 255, 255, 0.7);
   transition: all 0.2s ease;
   font-size: 15px;
+  border: 2px solid transparent;
 }
 
 .navItem:hover {
@@ -63,8 +65,10 @@
 }
 
 .active {
-  background-color: var(--color-secondary);
-  color: var(--color-white);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #f5a742 100%);
+  color: var(--color-primary);
+  font-weight: 700;
+  box-shadow: 0 4px 12px -2px rgba(250, 185, 91, 0.3);
 }
 
 .icon {

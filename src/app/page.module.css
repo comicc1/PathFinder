@@ -1,6 +1,7 @@
 .page {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 .main {
@@ -8,41 +9,56 @@
   flex: 1;
   flex-direction: column;
   align-items: center;
-  padding: 140px 24px 40px 24px; /* push content lower on the page */
+  padding: 80px 24px 60px 24px;
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
+  gap: 50px;
 }
 
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* Header Section */
+.header {
   text-align: center;
-  gap: 16px;
-  margin-bottom: 50px;
+  max-width: 600px;
+  animation: fadeInDown 0.6s ease-out;
 }
 
-.intro h1 {
+.title {
   font-size: 56px;
   font-weight: 800;
   color: var(--color-primary);
   letter-spacing: -0.04em;
+  margin-bottom: 12px;
 }
 
-.intro p {
-  font-size: 20px;
+.subtitle {
+  font-size: 18px;
   color: var(--color-secondary);
-  max-width: 600px;
+  font-weight: 500;
+  line-height: 1.6;
 }
 
+/* Upload Section */
 .uploadSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
   width: 100%;
-  max-width: 500px;
+  max-width: 1000px;
+  align-items: start;
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.uploadCard {
   background: var(--color-white);
-  padding: 40px;
   border-radius: 24px;
-  box-shadow: 0 10px 25px -5px rgba(26, 50, 99, 0.1), 0 8px 10px -6px rgba(26, 50, 99, 0.1);
+  padding: 40px;
+  box-shadow: 0 10px 30px -5px rgba(26, 50, 99, 0.08);
+  transition: all 0.3s ease;
+}
+
+.uploadCard:hover {
+  box-shadow: 0 20px 40px -8px rgba(26, 50, 99, 0.15);
 }
 
 .form {
@@ -51,32 +67,66 @@
   gap: 24px;
 }
 
-.fileInputContainer {
+.uploadZone {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  border: 2px dashed var(--color-secondary);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(84, 119, 146, 0.05) 0%, rgba(250, 185, 91, 0.05) 100%);
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  gap: 12px;
 }
 
-.label {
+.uploadZone:hover {
+  border-color: var(--color-accent);
+  background: linear-gradient(135deg, rgba(84, 119, 146, 0.1) 0%, rgba(250, 185, 91, 0.1) 100%);
+}
+
+.uploadIcon {
+  font-size: 48px;
+  line-height: 1;
+  display: block;
+}
+
+.uploadZone h3 {
+  font-size: 18px;
   font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.uploadZone p {
   font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: var(--color-secondary);
+  margin: 0;
+  font-weight: 500;
 }
 
 .fileInput {
-  padding: 12px;
-  border: 2px dashed var(--color-secondary);
-  border-radius: 12px;
-  background: #f8fafc;
-  color: var(--color-primary);
-  cursor: pointer;
-  transition: all 0.2s ease;
+  display: none;
 }
 
-.fileInput:hover {
-  border-color: var(--color-accent);
-  background: var(--color-white);
+.fileLabel {
+  padding: 12px 24px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.fileLabel:hover {
+  background: var(--color-accent);
+  color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
 .submitButton {
@@ -89,83 +139,291 @@
   font-size: 16px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 6px -1px rgba(26, 50, 99, 0.2);
+  box-shadow: 0 4px 12px -2px rgba(26, 50, 99, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .submitButton:hover:not(:disabled) {
   background: var(--color-accent);
   color: var(--color-primary);
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(250, 185, 91, 0.3);
+  box-shadow: 0 10px 20px -4px rgba(250, 185, 91, 0.3);
 }
 
 .submitButton:disabled {
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: not-allowed;
-  background: var(--color-secondary);
 }
 
-.errorSection {
-  margin-top: 24px;
-  padding: 16px;
-  background: #fef2f2;
-  border: 1px solid #fee2e2;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 500px;
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--color-white);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
-.errorText {
-  color: #991b1b;
-  font-weight: 600;
-  font-size: 14px;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
+/* Info Box */
+.infoBox {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #254080 100%);
+  color: var(--color-white);
+  border-radius: 16px;
+  padding: 32px;
+  animation: fadeInUp 0.6s ease-out 0.15s both;
+}
+
+.infoBox h4 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.analysisList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.analysisList li {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Feedback Section */
 .feedbackSection {
-  margin-top: 24px;
-  margin-bottom: 48px;
   width: 100%;
+  max-width: 1000px;
   animation: fadeIn 0.5s ease-out;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.feedbackHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
 }
 
-.feedbackSection h2 {
-  color: var(--color-primary);
+.feedbackIcon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.feedbackHeader h2 {
   font-size: 32px;
   font-weight: 800;
-  margin-bottom: 24px;
-  text-align: center;
+  color: var(--color-primary);
+  margin: 0;
 }
 
 .feedbackContent {
   padding: 40px;
   background: var(--color-white);
-  border-radius: 24px;
+  border-radius: 20px;
   color: var(--color-primary);
   line-height: 1.8;
-  box-shadow: 0 20px 25px -5px rgba(26, 50, 99, 0.05);
+  box-shadow: 0 10px 30px -5px rgba(26, 50, 99, 0.1);
   border: 1px solid rgba(26, 50, 99, 0.05);
 }
 
 .feedbackContent p {
   margin-bottom: 16px;
-  font-size: 17px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
-@media (max-width: 600px) {
-  .intro h1 {
+.feedbackContent p:last-child {
+  margin-bottom: 0;
+}
+
+/* Error Section */
+.errorSection {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: #fef2f2;
+  border: 2px solid #fee2e2;
+  border-radius: 16px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.errorIcon {
+  width: 40px;
+  height: 40px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.errorText {
+  color: #991b1b;
+  font-weight: 600;
+  font-size: 15px;
+  margin: 0;
+}
+
+/* Footer */
+.footer {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--color-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  border-top: 1px solid rgba(26, 50, 99, 0.1);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .uploadSection {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .main {
+    padding: 60px 20px 40px 20px;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
     font-size: 40px;
   }
-  
-  .main {
-    padding: 40px 16px;
+
+  .subtitle {
+    font-size: 16px;
   }
-  
-  .uploadSection, .feedbackContent {
+
+  .uploadCard {
+    padding: 28px;
+  }
+
+  .uploadZone {
+    padding: 28px;
+  }
+
+  .uploadIcon {
+    font-size: 36px;
+  }
+
+  .feedbackHeader h2 {
+    font-size: 24px;
+  }
+
+  .infoBox {
     padding: 24px;
+  }
+
+  .infoBox h4 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 40px 16px 30px 16px;
+    gap: 30px;
+  }
+
+  .title {
+    font-size: 32px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+  }
+
+  .uploadCard {
+    padding: 20px;
+  }
+
+  .uploadZone {
+    padding: 20px;
+  }
+
+  .uploadZone h3 {
+    font-size: 16px;
+  }
+
+  .uploadZone p {
+    font-size: 13px;
+  }
+
+  .feedbackContent {
+    padding: 20px;
+  }
+
+  .feedbackContent p {
+    font-size: 15px;
+  }
+
+  .errorSection {
+    padding: 16px;
+  }
+
+  .footer {
+    padding: 24px 16px;
+    font-size: 12px;
   }
 }

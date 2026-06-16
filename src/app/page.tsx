@@ -56,59 +56,88 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <div className={styles.intro}>
-          <h1>PathFinder.</h1>
+        {/* Header */}
+        <div className={styles.header}>
+          <h1 className={styles.title}>Resume Analyzer</h1>
+          <p className={styles.subtitle}>Get AI-powered insights to optimize your resume for success</p>
         </div>
 
-        {error && (
-          <section className={styles.errorSection}>
-            <p className={styles.errorText}>{error}</p>
-          </section>
-        )}
-
+        {/* Feedback Display */}
         {feedback && (
           <section className={styles.feedbackSection}>
-            <h2>Analysis Results</h2>
+            <div className={styles.feedbackHeader}>
+              <div className={styles.feedbackIcon}>✓</div>
+              <h2>Analysis Results</h2>
+            </div>
             <div className={styles.feedbackContent}>
               {feedback.split("\n").map((line, i) => (
-                <p key={i}>{line}</p>
+                line.trim() && <p key={i}>{line}</p>
               ))}
             </div>
           </section>
         )}
 
+        {/* Error Display */}
+        {error && (
+          <section className={styles.errorSection}>
+            <div className={styles.errorIcon}>!</div>
+            <p className={styles.errorText}>{error}</p>
+          </section>
+        )}
+
+        {/* Upload Section */}
         <section className={styles.uploadSection}>
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <div className={styles.fileInputContainer}>
-              <label htmlFor="resume" className={styles.label}>
-                Resume (PDF format)
-              </label>
-              <input
-                type="file"
-                id="resume"
-                name="resume"
-                accept=".pdf"
-                required
-                className={styles.fileInput}
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className={styles.submitButton}
-            >
-              {loading ? "Analyzing Career Path..." : "Analyze Resume"}
-            </button>
-          </form>
+          <div className={styles.uploadCard}>
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <div className={styles.uploadZone}>
+                <div className={styles.uploadIcon}>📄</div>
+                <h3>Upload Your Resume</h3>
+                <p>Choose a PDF to get comprehensive feedback</p>
+                
+                <input
+                  type="file"
+                  id="resume"
+                  name="resume"
+                  accept=".pdf"
+                  required
+                  className={styles.fileInput}
+                />
+                <label htmlFor="resume" className={styles.fileLabel}>
+                  Click to browse or drag and drop
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className={styles.submitButton}
+              >
+                {loading ? (
+                  <>
+                    <span className={styles.spinner}></span>
+                    Analyzing Career Path...
+                  </>
+                ) : (
+                  "Analyze Resume"
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Info Box */}
+          <div className={styles.infoBox}>
+            <h4>What We Analyze</h4>
+            <ul className={styles.analysisList}>
+              <li>✓ Overall impact & professional tone</li>
+              <li>✓ Strengths & achievements</li>
+              <li>✓ Areas for improvement</li>
+              <li>✓ Actionable recommendations</li>
+            </ul>
+          </div>
         </section>
       </main>
-      <footer style={{ 
-        padding: '40px 20px', 
-        textAlign: 'center', 
-        color: 'var(--color-secondary)',
-        fontSize: '14px',
-        fontWeight: '500'
-      }}>
+
+      <footer className={styles.footer}>
         © {new Date().getFullYear()} PathFinder. All rights reserved.
       </footer>
     </div>
