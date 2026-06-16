@@ -8,7 +8,7 @@
   flex: 1;
   flex-direction: column;
   align-items: center;
-  padding: 60px 24px;
+  padding: 140px 24px 40px 24px; /* push content lower on the page */
   width: 100%;
   max-width: 900px;
   margin: 0 auto;

@@ -10,11 +10,8 @@ export default function Sidebar() {
       </div>
       
       <nav className={styles.nav}>
-        <Link href="#" className={styles.navItem}>
-          Paraphraser
-        </Link>
-        <Link href="#" className={styles.navItem}>
-          Grammar Checker
+        <Link href="/create-resume" className={styles.navItem}>
+          Create Resumes
         </Link>
         <Link href="/" className={`${styles.navItem} ${styles.active}`}>
           Resume Analyzer
