@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import styles from "./page.module.css";
+import { ResumeAnalyzerIcon } from "@/components/ResumeAnalyzerIcon";
+import { CreateResumeIcon } from "@/components/CreateResumeIcon";
 
 export default function Home() {
   return (
@@ -34,7 +36,9 @@ export default function Home() {
         <div className={styles.featureGrid}>
           {/* Resume Analyzer Card */}
           <Link href="/analyzer" className={styles.featureCard}>
-            <div className={styles.featureIcon}>📊</div>
+            <div className={styles.featureIcon}>
+              <ResumeAnalyzerIcon />
+            </div>
             <h3>Resume Analyzer</h3>
             <p className={styles.featureDescription}>
               Get AI-powered analysis of your resume with actionable recommendations to improve your chances
@@ -52,7 +56,9 @@ export default function Home() {
 
           {/* Create Resume Card */}
           <Link href="/create-resume" className={styles.featureCard}>
-            <div className={styles.featureIcon}>✍️</div>
+            <div className={styles.featureIcon}>
+              <CreateResumeIcon />
+            </div>
             <h3>Create Resume</h3>
             <p className={styles.featureDescription}>
               Build a professional resume from scratch using modern templates or import your existing one
