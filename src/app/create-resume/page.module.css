@@ -144,6 +144,60 @@
   transform: translateY(0);
 }
 
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--color-secondary);
+}
+
+/* Upload Drop Zone */
+.hiddenFileInput {
+  display: none;
+}
+
+.uploadDropZone {
+  padding: 24px;
+  border: 2px dashed var(--color-secondary);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(84, 119, 146, 0.04) 0%, rgba(250, 185, 91, 0.04) 100%);
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.uploadDropZone:hover {
+  border-color: var(--color-accent);
+  background: linear-gradient(135deg, rgba(84, 119, 146, 0.08) 0%, rgba(250, 185, 91, 0.08) 100%);
+}
+
+.uploadDropZone.dragging {
+  border-color: var(--color-accent);
+  background: linear-gradient(135deg, rgba(84, 119, 146, 0.12) 0%, rgba(250, 185, 91, 0.12) 100%);
+  box-shadow: 0 0 0 3px rgba(250, 185, 91, 0.15);
+}
+
+.dropLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--color-secondary);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.dropIcon {
+  font-size: 32px;
+  display: block;
+}
+
+.fileName {
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 15px;
+}
+
 /* Templates Section */
 .templatesSection {
   width: 100%;

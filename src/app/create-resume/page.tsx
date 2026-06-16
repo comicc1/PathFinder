@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import styles from "../page.module.css";
 import localStyles from "./page.module.css";
 
@@ -35,6 +36,31 @@ const templates = [
 ];
 
 export default function CreateResumePage() {
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleFileSelect = (file: File | null) => {
+    if (file && file.type === "application/pdf") {
+      setSelectedFile(file.name);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    handleFileSelect(file || null);
+  };
+
   return (
     <div className={styles.page}>
       <main className={localStyles.main}>
@@ -61,8 +87,35 @@ export default function CreateResumePage() {
             <div className={localStyles.cardIcon}>📄</div>
             <h3>Import PDF</h3>
             <p>Upload your existing resume and enhance it</p>
-            <input type="file" accept=".pdf" className={localStyles.fileInput} />
-            <button className={localStyles.button}>Import Resume</button>
+            
+            <div 
+              className={`${localStyles.uploadDropZone} ${isDragging ? localStyles.dragging : ""}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <input
+                type="file"
+                id="import-pdf"
+                accept=".pdf"
+                className={localStyles.hiddenFileInput}
+                onChange={(e) => handleFileSelect(e.target.files?.[0] || null)}
+              />
+              <label htmlFor="import-pdf" className={localStyles.dropLabel}>
+                <span className={localStyles.dropIcon}>📁</span>
+                {selectedFile ? (
+                  <span className={localStyles.fileName}>{selectedFile}</span>
+                ) : (
+                  <>
+                    <span>Drag PDF here or click to browse</span>
+                  </>
+                )}
+              </label>
+            </div>
+            
+            <button className={localStyles.button} disabled={!selectedFile}>
+              Import Resume
+            </button>
           </div>
         </section>
 
