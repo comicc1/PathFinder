@@ -30,6 +30,78 @@
   line-height: 1.6;
 }
 
+.draftSection {
+  width: 100%;
+  display: grid;
+  gap: 20px;
+}
+
+.draftCard {
+  display: grid;
+  gap: 16px;
+  padding: 28px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+  border: 1px solid rgba(26, 50, 99, 0.08);
+  box-shadow: 0 16px 40px rgba(26, 50, 99, 0.08);
+}
+
+.inputGroup {
+  display: grid;
+  gap: 8px;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.inputGroup span {
+  font-size: 14px;
+}
+
+.textarea,
+.textareaLarge {
+  width: 100%;
+  border: 1px solid rgba(26, 50, 99, 0.14);
+  border-radius: 14px;
+  background: #fff;
+  padding: 14px 16px;
+  color: var(--color-primary);
+  font: inherit;
+  resize: vertical;
+}
+
+.textarea {
+  min-height: 96px;
+}
+
+.textareaLarge {
+  min-height: 180px;
+}
+
+.textarea:focus,
+.textareaLarge:focus,
+.input:focus {
+  outline: 2px solid rgba(250, 185, 91, 0.35);
+  border-color: transparent;
+}
+
+.inlineError,
+.inlineSuccess {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.inlineError {
+  background: rgba(239, 68, 68, 0.12);
+  color: #8e1b1b;
+}
+
+.inlineSuccess {
+  background: rgba(16, 185, 129, 0.12);
+  color: #05684a;
+}
+
 /* Quick Start Section */
 .quickStart {
   display: grid;

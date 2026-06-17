@@ -70,6 +70,36 @@
   margin: 0;
 }
 
+.heroActions {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.heroButtonPrimary,
+.heroButtonSecondary {
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.heroButtonPrimary {
+  background: linear-gradient(135deg, var(--color-primary), #274b8f);
+  color: white;
+}
+
+.heroButtonSecondary {
+  border: 1px solid rgba(26, 50, 99, 0.14);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--color-primary);
+}
+
 .heroDecoration {
   position: absolute;
   top: 0;
@@ -280,6 +310,45 @@
   color: var(--color-secondary);
   font-weight: 500;
   line-height: 1.6;
+}
+
+.textField {
+  display: grid;
+  gap: 8px;
+}
+
+.textField label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.textInput {
+  border: 1px solid rgba(26, 50, 99, 0.14);
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: #fff;
+  color: var(--color-primary);
+  font: inherit;
+}
+
+.textInput:focus {
+  outline: 2px solid rgba(250, 185, 91, 0.35);
+  border-color: transparent;
+}
+
+.successSection {
+  width: 100%;
+  max-width: 1000px;
+}
+
+.successText {
+  margin: 0;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #05684a;
+  font-weight: 600;
 }
 
 /* Upload Section */

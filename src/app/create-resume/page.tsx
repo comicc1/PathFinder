@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import styles from "../page.module.css";
 import localStyles from "./page.module.css";
+import { saveResumeDraft, type DraftActionState } from "../actions";
 
 const templates = [
   {
@@ -39,6 +40,11 @@ const templates = [
 export default function CreateResumePage() {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("Modern");
+  const [draftState, draftAction, draftPending] = useActionState(
+    saveResumeDraft,
+    { success: false, error: "" } as DraftActionState,
+  );
 
   const handleFileSelect = (file: File | null) => {
     if (file && file.type === "application/pdf") {
@@ -77,8 +83,78 @@ export default function CreateResumePage() {
       <main className={localStyles.main}>
         <div className={localStyles.header}>
           <h1 className={localStyles.title}>Create Resume</h1>
-          <p className={localStyles.subtitle}>Start with a template or import an existing resume</p>
+          <p className={localStyles.subtitle}>
+            Start with a template, save a draft, and sync it to your dashboard when you sign in.
+          </p>
         </div>
+
+        <section className={localStyles.draftSection}>
+          <div className={localStyles.sectionHeader}>
+            <h2>Save a working draft</h2>
+            <p>
+              Drafts are stored in Supabase and tied to your account.{" "}
+              <Link href="/login">Sign in</Link> if you want them synced.
+            </p>
+          </div>
+
+          <form action={draftAction} className={localStyles.draftCard}>
+            <input type="hidden" name="templateName" value={selectedTemplate} />
+            <input
+              type="hidden"
+              name="draftId"
+              value={draftState.success ? draftState.draftId : ""}
+            />
+
+            <label className={localStyles.inputGroup}>
+              <span>Draft title</span>
+              <input
+                name="title"
+                type="text"
+                placeholder="Product designer resume"
+                className={localStyles.input}
+              />
+            </label>
+
+            <label className={localStyles.inputGroup}>
+              <span>Summary</span>
+              <textarea
+                name="summary"
+                placeholder="A short positioning statement for the top of the resume"
+                className={localStyles.textarea}
+              />
+            </label>
+
+            <label className={localStyles.inputGroup}>
+              <span>Skills</span>
+              <input
+                name="skills"
+                type="text"
+                placeholder="Figma, React, Product Strategy"
+                className={localStyles.input}
+              />
+            </label>
+
+            <label className={localStyles.inputGroup}>
+              <span>Resume content</span>
+              <textarea
+                name="content"
+                placeholder="Paste or draft your experience, projects, and achievements here."
+                className={localStyles.textareaLarge}
+              />
+            </label>
+
+            {draftState.success === false && draftState.error ? (
+              <p className={localStyles.inlineError}>{draftState.error}</p>
+            ) : null}
+            {draftState.success ? (
+              <p className={localStyles.inlineSuccess}>{draftState.message}</p>
+            ) : null}
+
+            <button className={localStyles.button} type="submit" disabled={draftPending}>
+              {draftPending ? "Saving..." : "Save draft"}
+            </button>
+          </form>
+        </section>
 
         {/* Quick Start */}
         <section className={localStyles.quickStart}>
@@ -146,8 +222,14 @@ export default function CreateResumePage() {
                 <h4>{template.name}</h4>
                 <p className={localStyles.templateDesc}>{template.description}</p>
                 <small className={localStyles.templatePreviewText}>{template.preview}</small>
-                <button className={localStyles.templateButton}>Use Template</button>
-              </div>
+            <button
+              type="button"
+              className={localStyles.templateButton}
+              onClick={() => setSelectedTemplate(template.name)}
+            >
+              {selectedTemplate === template.name ? "Selected" : "Use Template"}
+            </button>
+          </div>
             ))}
           </div>
         </section>

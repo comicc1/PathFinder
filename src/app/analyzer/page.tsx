@@ -15,7 +15,7 @@ async function extractTextFromPdf(file: File) {
   for (let i = 1; i <= maxPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    const strings = content.items.map((s: any) => (s.str || '')).join(' ');
+    const strings = (content.items as Array<{ str?: string }>).map((item) => item.str || '').join(' ');
     pageTexts.push(strings);
   }
   return pageTexts.join('\n\n');
@@ -27,12 +27,14 @@ export default function AnalyzerPage() {
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
     setError(null);
     setFeedback(null);
+    setSaved(false);
     const formData = new FormData(event.currentTarget);
 
     try {
@@ -45,11 +47,12 @@ export default function AnalyzerPage() {
       const result = await analyzeResume(formData);
       if (result.success) {
         setFeedback(result.feedback || "No feedback received");
+        setSaved(Boolean(result.saved));
       } else {
         setError(result.error || "An unknown error occurred");
       }
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -72,6 +75,14 @@ export default function AnalyzerPage() {
         <div className={styles.header}>
           <p className={styles.subtitle}>Get AI-powered insights to optimize your resume for success</p>
         </div>
+
+        {saved && (
+          <section className={styles.successSection}>
+            <p className={styles.successText}>
+              Saved to your dashboard. Sign in first if you want future scans stored automatically.
+            </p>
+          </section>
+        )}
 
         {/* Feedback Display */}
         {feedback && (
@@ -100,6 +111,16 @@ export default function AnalyzerPage() {
         <section className={styles.uploadSection}>
           <div className={styles.uploadCard}>
             <form onSubmit={handleSubmit} className={styles.form}>
+              <div className={styles.textField}>
+                <label htmlFor="resumeTitle">Resume title</label>
+                <input
+                  id="resumeTitle"
+                  name="resumeTitle"
+                  type="text"
+                  placeholder="Primary product manager resume"
+                  className={styles.textInput}
+                />
+              </div>
               <div className={styles.uploadZone}>
                 <div className={styles.uploadIcon}>📄</div>
                 <h3>Upload Your Resume</h3>
