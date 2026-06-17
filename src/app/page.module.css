@@ -246,15 +246,21 @@
 
 /* Analyzer & Feature Pages */
 .pageHeader {
+  display: block;
+  padding: 24px 0;
+  background: var(--color-white);
+  border-bottom: 1px solid rgba(26, 50, 99, 0.1);
+  width: 100%;
+  margin: 0;
+}
+
+.pageHeaderInner {
   display: flex;
   align-items: center;
   gap: 20px;
-  padding: 24px;
-  background: var(--color-white);
-  border-bottom: 1px solid rgba(26, 50, 99, 0.1);
-  max-width: 100%;
   width: min(100%, 1000px);
   margin: 0 auto;
+  padding: 0 24px;
 }
 
 .backButton {
@@ -817,7 +823,7 @@
     font-size: 14px;
   }
 
-  .pageHeader {
+  .pageHeaderInner {
     flex-direction: column;
     align-items: flex-start;
     width: calc(100% - 24px);
@@ -923,8 +929,8 @@
     padding: 18px;
   }
 
-  .pageHeader {
-    padding: 16px;
+  .pageHeaderInner {
+    padding: 0 16px;
     gap: 12px;
   }
 
