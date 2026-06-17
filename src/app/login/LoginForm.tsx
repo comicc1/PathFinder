@@ -24,7 +24,6 @@ export default function LoginForm({ nextPath }: { nextPath: string }) {
     const formData = new FormData(event.currentTarget);
     const email = String(formData.get("email") ?? "").trim();
     const password = String(formData.get("password") ?? "");
-
     if (!email || !password) {
       setError("Add both email and password.");
       setPending(false);

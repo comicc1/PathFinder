@@ -1,8 +1,10 @@
 .shell {
-  min-height: 100vh;
+  min-height: 100dvh;
   padding: 32px 24px 48px;
   display: grid;
   gap: 24px;
+  width: min(100%, 1400px);
+  margin-inline: auto;
   background:
     radial-gradient(circle at top right, rgba(250, 185, 91, 0.15), transparent 26%),
     linear-gradient(180deg, #f4efe8 0%, #e8e2db 100%);
@@ -237,3 +239,76 @@
     flex-direction: column;
   }
 }
+
+@media (max-aspect-ratio: 3/4) {
+  .shell {
+    padding: 20px 14px 28px;
+    gap: 16px;
+  }
+
+  .hero,
+  .panel,
+  .statCard {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .hero h1 {
+    font-size: clamp(30px, 8.5vw, 40px);
+  }
+
+  .panelHeader {
+    margin-bottom: 12px;
+  }
+}
+
+@media (min-aspect-ratio: 21/9) {
+  .shell {
+    max-width: 1360px;
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  .hero,
+  .panel {
+    padding-inline: 30px;
+  }
+}
+
+@media (max-width: 390px) {
+  .shell {
+    padding: 16px 12px 24px;
+  }
+
+  .hero h1 {
+    font-size: 28px;
+  }
+
+  .panel,
+  .hero,
+  .statCard {
+    border-radius: 16px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shell {
+    padding: 28px 20px 40px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .shell {
+    max-width: 1440px;
+    margin-inline: auto;
+  }
+
+  .hero h1 {
+    font-size: 60px;
+  }
+}
+

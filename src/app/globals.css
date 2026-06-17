@@ -55,13 +55,13 @@ a:hover {
 
 .app-container {
   display: flex;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .main-wrapper {
   flex: 1;
   background-color: var(--color-bg);
-  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
 }
 
@@ -74,5 +74,31 @@ a:hover {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+}
+
+@media (max-aspect-ratio: 3/4) {
+  .app-container,
+  .main-wrapper {
+    min-height: 100svh;
+  }
+}
+
+@media (min-aspect-ratio: 21/9) {
+  .main-wrapper {
+    margin-inline: auto;
+    max-width: 1720px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .main-wrapper {
+    width: 100%;
   }
 }

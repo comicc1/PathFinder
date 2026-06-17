@@ -1,14 +1,14 @@
 .page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* Landing Page */
 .landingPage {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .hero {
@@ -253,6 +253,8 @@
   background: var(--color-white);
   border-bottom: 1px solid rgba(26, 50, 99, 0.1);
   max-width: 100%;
+  width: min(100%, 1000px);
+  margin: 0 auto;
 }
 
 .backButton {
@@ -340,6 +342,7 @@
 .successSection {
   width: 100%;
   max-width: 1000px;
+  margin: 0 auto;
 }
 
 .successText {
@@ -522,6 +525,7 @@
 .feedbackSection {
   width: 100%;
   max-width: 1000px;
+  margin: 0 auto;
   animation: fadeIn 0.5s ease-out;
 }
 
@@ -577,6 +581,7 @@
 .errorSection {
   width: 100%;
   max-width: 1000px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -812,5 +817,155 @@
   .pageHeader {
     flex-direction: column;
     align-items: flex-start;
+    width: calc(100% - 24px);
   }
 }
+
+@media (max-aspect-ratio: 3/4) {
+  .hero {
+    padding: 48px 16px 32px 16px;
+  }
+
+  .heroTitle {
+    font-size: clamp(32px, 9vw, 44px);
+  }
+
+  .heroSubtitle {
+    font-size: 17px;
+  }
+
+  .sectionHeader {
+    margin-bottom: 36px;
+  }
+
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .featureCard {
+    padding: 22px;
+  }
+
+  .main {
+    padding: 36px 16px 28px 16px;
+    gap: 28px;
+  }
+
+  .uploadSection {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .uploadCard,
+  .feedbackContent,
+  .infoBox {
+    padding: 20px;
+  }
+
+  .uploadZone {
+    padding: 20px;
+  }
+
+  .feedbackHeader {
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .feedbackHeader h2 {
+    font-size: 22px;
+  }
+}
+
+@media (min-aspect-ratio: 21/9) {
+  .hero,
+  .featuresSection,
+  .main,
+  .uploadSection,
+  .feedbackSection,
+  .successSection,
+  .errorSection {
+    max-width: 1320px;
+    margin-inline: auto;
+  }
+
+  .hero {
+    padding-top: 86px;
+    padding-bottom: 68px;
+  }
+
+  .featureGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 1240px;
+  }
+
+  .uploadSection {
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  }
+}
+
+@media (max-width: 390px) {
+  .hero {
+    padding: 36px 12px 24px 12px;
+  }
+
+  .heroTitle {
+    font-size: 32px;
+  }
+
+  .heroSubtitle {
+    font-size: 16px;
+  }
+
+  .featureCard {
+    padding: 18px;
+  }
+
+  .pageHeader {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .pageTitle {
+    font-size: 24px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .hero {
+    padding: 84px 24px 64px 24px;
+  }
+
+  .heroTitle {
+    font-size: 60px;
+  }
+
+  .featureGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 860px;
+  }
+
+  .main {
+    max-width: 900px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .hero,
+  .featuresSection,
+  .main,
+  .uploadSection,
+  .feedbackSection,
+  .successSection,
+  .errorSection {
+    max-width: 1360px;
+  }
+
+  .heroTitle {
+    font-size: 80px;
+  }
+
+  .sectionHeader h2 {
+    font-size: 52px;
+  }
+}
+
