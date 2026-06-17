@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PathFinder. - Optimize Your Career",
-  description: "AI-powered resume analysis to help you find your path.",
+  title: "PathFinder",
+  description: "A dark, focused workspace for resumes and career analysis.",
 };
 
 export default function RootLayout({
@@ -19,13 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body>
-        <div className="app-container">
-          <div className="main-wrapper">
-            {children}
-          </div>
-        </div>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

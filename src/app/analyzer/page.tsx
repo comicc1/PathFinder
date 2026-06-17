@@ -1,27 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import styles from "../page.module.css";
+import SiteChrome from "@/components/SiteChrome";
+import { analyzeResume } from "../actions";
+import styles from "./page.module.css";
 
 async function extractTextFromPdf(file: File) {
   const arrayBuffer = await file.arrayBuffer();
-  const pdfjs = await import('pdfjs-dist/legacy/build/pdf.js');
+  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.js");
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
   const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
   const pdf = await loadingTask.promise;
-  const maxPages = pdf.numPages || 0;
   const pageTexts: string[] = [];
-  for (let i = 1; i <= maxPages; i++) {
+  for (let i = 1; i <= (pdf.numPages || 0); i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    const strings = (content.items as Array<{ str?: string }>).map((item) => item.str || '').join(' ');
+    const strings = (content.items as Array<{ str?: string }>).map((item) => item.str || "").join(" ");
     pageTexts.push(strings);
   }
-  return pageTexts.join('\n\n');
+  return pageTexts.join("\n\n");
 }
-
-import { analyzeResume } from "../actions";
 
 export default function AnalyzerPage() {
   const [loading, setLoading] = useState(false);
@@ -38,11 +36,11 @@ export default function AnalyzerPage() {
     const formData = new FormData(event.currentTarget);
 
     try {
-      const file = (event.currentTarget.querySelector('#resume') as HTMLInputElement).files?.[0];
-      if (!file) throw new Error('No file selected');
+      const file = (event.currentTarget.querySelector("#resume") as HTMLInputElement).files?.[0];
+      if (!file) throw new Error("No file selected");
       const text = await extractTextFromPdf(file);
-      formData.delete('resume');
-      formData.append('resumeText', text);
+      formData.delete("resume");
+      formData.append("resumeText", text);
 
       const result = await analyzeResume(formData);
       if (result.success) {
@@ -59,32 +57,21 @@ export default function AnalyzerPage() {
   }
 
   return (
-    <div className={styles.page}>
-      {/* Header */}
-      <header className={styles.pageHeader}>
-        <Link href="/" className={styles.backButton}>
-          ← Back
-        </Link>
-        <div>
-          <h1 className={styles.pageTitle}>Resume Analyzer</h1>
-        </div>
-      </header>
-
+    <SiteChrome
+      title="Resume Analyzer"
+      eyebrow="AI-powered review"
+      description="Upload a resume PDF, extract the text, and get structured feedback that helps you tighten the story."
+      primaryHref="/create-resume"
+      primaryLabel="Create resume"
+      secondaryHref="/dashboard"
+      secondaryLabel="Dashboard"
+    >
       <main className={styles.main}>
-        {/* Header */}
-        <div className={styles.header}>
-          <p className={styles.subtitle}>Get AI-powered insights to optimize your resume for success</p>
-        </div>
-
         {saved && (
           <section className={styles.successSection}>
-            <p className={styles.successText}>
-              Saved to your dashboard. Sign in first if you want future scans stored automatically.
-            </p>
+            <p className={styles.successText}>Saved to your dashboard. Sign in first if you want future scans stored automatically.</p>
           </section>
         )}
-
-        {/* Feedback Display */}
         {feedback && (
           <section className={styles.feedbackSection}>
             <div className={styles.feedbackHeader}>
@@ -92,71 +79,34 @@ export default function AnalyzerPage() {
               <h2>Analysis Results</h2>
             </div>
             <div className={styles.feedbackContent}>
-              {feedback.split("\n").map((line, i) => (
-                line.trim() && <p key={i}>{line}</p>
-              ))}
+              {feedback.split("\n").map((line, i) => line.trim() && <p key={i}>{line}</p>)}
             </div>
           </section>
         )}
-
-        {/* Error Display */}
         {error && (
           <section className={styles.errorSection}>
-            <div className={styles.errorIcon}>!</div>
             <p className={styles.errorText}>{error}</p>
           </section>
         )}
-
-        {/* Upload Section */}
         <section className={styles.uploadSection}>
           <div className={styles.uploadCard}>
             <form onSubmit={handleSubmit} className={styles.form}>
               <div className={styles.textField}>
                 <label htmlFor="resumeTitle">Resume title</label>
-                <input
-                  id="resumeTitle"
-                  name="resumeTitle"
-                  type="text"
-                  placeholder="Primary product manager resume"
-                  className={styles.textInput}
-                />
+                <input id="resumeTitle" name="resumeTitle" type="text" placeholder="Primary product manager resume" className={styles.textInput} />
               </div>
               <div className={styles.uploadZone}>
                 <div className={styles.uploadIcon}>📄</div>
                 <h3>Upload Your Resume</h3>
                 <p>Choose a PDF to get comprehensive feedback</p>
-                
-                <input
-                  type="file"
-                  id="resume"
-                  name="resume"
-                  accept=".pdf"
-                  required
-                  className={styles.fileInput}
-                />
-                <label htmlFor="resume" className={styles.fileLabel}>
-                  Click to browse or drag and drop
-                </label>
+                <input type="file" id="resume" name="resume" accept=".pdf" required className={styles.fileInput} />
+                <label htmlFor="resume" className={styles.fileLabel}>Click to browse or drag and drop</label>
               </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className={styles.submitButton}
-              >
-                {loading ? (
-                  <>
-                    <span className={styles.spinner}></span>
-                    Analyzing Career Path...
-                  </>
-                ) : (
-                  "Analyze Resume"
-                )}
+              <button type="submit" disabled={loading} className={styles.submitButton}>
+                {loading ? <><span className={styles.spinner}></span>Analyzing Career Path...</> : "Analyze Resume"}
               </button>
             </form>
           </div>
-
-          {/* Info Box */}
           <div className={styles.infoBox}>
             <h4>What We Analyze</h4>
             <ul className={styles.analysisList}>
@@ -168,10 +118,6 @@ export default function AnalyzerPage() {
           </div>
         </section>
       </main>
-
-      <footer className={styles.footer}>
-        © {new Date().getFullYear()} PathFinder. All rights reserved.
-      </footer>
-    </div>
+    </SiteChrome>
   );
 }

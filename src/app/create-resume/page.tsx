@@ -2,39 +2,15 @@
 
 import { useActionState, useState } from "react";
 import Link from "next/link";
-import styles from "../page.module.css";
-import localStyles from "./page.module.css";
+import styles from "./page.module.css";
 import { saveResumeDraft, type DraftActionState } from "../actions";
+import SiteChrome from "@/components/SiteChrome";
 
 const templates = [
-  {
-    id: 1,
-    name: "Modern",
-    description: "Clean, contemporary design",
-    icon: "▭",
-    preview: "Minimalist layout with clear sections",
-  },
-  {
-    id: 2,
-    name: "Professional",
-    description: "Corporate & formal",
-    icon: "▬",
-    preview: "Traditional format for established careers",
-  },
-  {
-    id: 3,
-    name: "Creative",
-    description: "Bold & expressive",
-    icon: "◆",
-    preview: "Visual emphasis with accent colors",
-  },
-  {
-    id: 4,
-    name: "Minimal",
-    description: "Essential information only",
-    icon: "─",
-    preview: "Distraction-free, text-focused layout",
-  },
+  { id: 1, name: "Modern", description: "Clean, contemporary design", icon: "▭", preview: "Minimalist layout with clear sections" },
+  { id: 2, name: "Professional", description: "Corporate & formal", icon: "▬", preview: "Traditional format for established careers" },
+  { id: 3, name: "Creative", description: "Bold & expressive", icon: "◆", preview: "Visual emphasis with accent colors" },
+  { id: 4, name: "Minimal", description: "Essential information only", icon: "─", preview: "Distraction-free, text-focused layout" },
 ];
 
 export default function CreateResumePage() {
@@ -52,188 +28,122 @@ export default function CreateResumePage() {
     }
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    handleFileSelect(file || null);
-  };
-
   return (
-    <div className={styles.page}>
-      {/* Header */}
-      <header className={styles.pageHeader}>
-        <Link href="/" className={styles.backButton}>
-          ← Back
-        </Link>
-        <div>
-          <h1 className={styles.pageTitle}>Create Resume</h1>
-        </div>
-      </header>
-
-      <main className={localStyles.main}>
-        <div className={localStyles.header}>
-          <h1 className={localStyles.title}>Create Resume</h1>
-          <p className={localStyles.subtitle}>
-            Start with a template, save a draft, and sync it to your dashboard when you sign in.
-          </p>
-        </div>
-
-        <section className={localStyles.draftSection}>
-          <div className={localStyles.sectionHeader}>
+    <SiteChrome
+      title="Create Resume"
+      eyebrow="Draft studio"
+      description="Start with a template, save a draft, and sync it to your dashboard when you sign in."
+      primaryHref="/dashboard"
+      primaryLabel="Dashboard"
+      secondaryHref="/analyzer"
+      secondaryLabel="Analyzer"
+    >
+      <main className={styles.main}>
+        <section className={styles.draftSection}>
+          <div className={styles.sectionHeader}>
             <h2>Save a working draft</h2>
             <p>
-              Drafts are stored in Supabase and tied to your account.{" "}
-              <Link href="/login">Sign in</Link> if you want them synced.
+              Drafts are stored in Supabase and tied to your account. <Link href="/login">Sign in</Link> if you want them synced.
             </p>
           </div>
 
-          <form action={draftAction} className={localStyles.draftCard}>
+          <form action={draftAction} className={styles.draftCard}>
             <input type="hidden" name="templateName" value={selectedTemplate} />
-            <input
-              type="hidden"
-              name="draftId"
-              value={draftState.success ? draftState.draftId : ""}
-            />
+            <input type="hidden" name="draftId" value={draftState.success ? draftState.draftId : ""} />
 
-            <label className={localStyles.inputGroup}>
+            <label className={styles.inputGroup}>
               <span>Draft title</span>
-              <input
-                name="title"
-                type="text"
-                placeholder="Product designer resume"
-                className={localStyles.input}
-              />
+              <input name="title" type="text" placeholder="Product designer resume" className={styles.input} />
             </label>
-
-            <label className={localStyles.inputGroup}>
+            <label className={styles.inputGroup}>
               <span>Summary</span>
-              <textarea
-                name="summary"
-                placeholder="A short positioning statement for the top of the resume"
-                className={localStyles.textarea}
-              />
+              <textarea name="summary" placeholder="A short positioning statement for the top of the resume" className={styles.textarea} />
             </label>
-
-            <label className={localStyles.inputGroup}>
+            <label className={styles.inputGroup}>
               <span>Skills</span>
-              <input
-                name="skills"
-                type="text"
-                placeholder="Figma, React, Product Strategy"
-                className={localStyles.input}
-              />
+              <input name="skills" type="text" placeholder="Figma, React, Product Strategy" className={styles.input} />
             </label>
-
-            <label className={localStyles.inputGroup}>
+            <label className={styles.inputGroup}>
               <span>Resume content</span>
-              <textarea
-                name="content"
-                placeholder="Paste or draft your experience, projects, and achievements here."
-                className={localStyles.textareaLarge}
-              />
+              <textarea name="content" placeholder="Paste or draft your experience, projects, and achievements here." className={styles.textareaLarge} />
             </label>
 
-            {draftState.success === false && draftState.error ? (
-              <p className={localStyles.inlineError}>{draftState.error}</p>
-            ) : null}
-            {draftState.success ? (
-              <p className={localStyles.inlineSuccess}>{draftState.message}</p>
-            ) : null}
+            {draftState.success === false && draftState.error ? <p className={styles.inlineError}>{draftState.error}</p> : null}
+            {draftState.success ? <p className={styles.inlineSuccess}>{draftState.message}</p> : null}
 
-            <button className={localStyles.button} type="submit" disabled={draftPending}>
+            <button className={styles.button} type="submit" disabled={draftPending}>
               {draftPending ? "Saving..." : "Save draft"}
             </button>
           </form>
         </section>
 
-        {/* Quick Start */}
-        <section className={localStyles.quickStart}>
-          <div className={localStyles.card}>
-            <div className={localStyles.cardIcon}>+</div>
+        <section className={styles.quickStart}>
+          <div className={styles.card}>
+            <div className={styles.cardIcon}>+</div>
             <h3>Start from Scratch</h3>
-            <p>Begin with a blank resume and build it step by step</p>
-            <input
-              type="text"
-              placeholder="Resume title (e.g., Software Engineer 2024)"
-              className={localStyles.input}
-            />
-            <button className={localStyles.button}>Create New Resume</button>
+            <p>Begin with a blank resume and build it step by step.</p>
+            <input type="text" placeholder="Resume title (e.g., Software Engineer 2024)" className={styles.input} />
+            <button className={styles.button}>Create New Resume</button>
           </div>
 
-          <div className={localStyles.card}>
-            <div className={localStyles.cardIcon}>📄</div>
+          <div className={styles.card}>
+            <div className={styles.cardIcon}>📄</div>
             <h3>Import PDF</h3>
-            <p>Upload your existing resume and enhance it</p>
-            
-            <div 
-              className={`${localStyles.uploadDropZone} ${isDragging ? localStyles.dragging : ""}`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
+            <p>Upload your existing resume and enhance it.</p>
+            <div
+              className={`${styles.uploadDropZone} ${isDragging ? styles.dragging : ""}`}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDragging(true);
+              }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDragging(false);
+                handleFileSelect(e.dataTransfer.files?.[0] || null);
+              }}
             >
               <input
                 type="file"
                 id="import-pdf"
                 accept=".pdf"
-                className={localStyles.hiddenFileInput}
+                className={styles.hiddenFileInput}
                 onChange={(e) => handleFileSelect(e.target.files?.[0] || null)}
               />
-              <label htmlFor="import-pdf" className={localStyles.dropLabel}>
-                <span className={localStyles.dropIcon}>📁</span>
-                {selectedFile ? (
-                  <span className={localStyles.fileName}>{selectedFile}</span>
-                ) : (
-                  <>
-                    <span>Drag PDF here or click to browse</span>
-                  </>
-                )}
+              <label htmlFor="import-pdf" className={styles.dropLabel}>
+                <span className={styles.dropIcon}>📁</span>
+                {selectedFile ? <span className={styles.fileName}>{selectedFile}</span> : <span>Drag PDF here or click to browse</span>}
               </label>
             </div>
-            
-            <button className={localStyles.button} disabled={!selectedFile}>
+            <button className={styles.button} disabled={!selectedFile}>
               Import Resume
             </button>
           </div>
         </section>
 
-        {/* Template Gallery */}
-        <section className={localStyles.templatesSection}>
-          <div className={localStyles.sectionHeader}>
+        <section className={styles.templatesSection}>
+          <div className={styles.sectionHeader}>
             <h2>Choose a Template</h2>
-            <p>Select a design that matches your style</p>
+            <p>Select a design that matches your style.</p>
           </div>
 
-          <div className={localStyles.templateGrid}>
+          <div className={styles.templateGrid}>
             {templates.map((template) => (
-              <div key={template.id} className={localStyles.templateCard}>
-                <div className={localStyles.templatePreview}>
-                  <div className={localStyles.templateIcon}>{template.icon}</div>
+              <div key={template.id} className={styles.templateCard}>
+                <div className={styles.templatePreview}>
+                  <div className={styles.templateIcon}>{template.icon}</div>
                 </div>
                 <h4>{template.name}</h4>
-                <p className={localStyles.templateDesc}>{template.description}</p>
-                <small className={localStyles.templatePreviewText}>{template.preview}</small>
-            <button
-              type="button"
-              className={localStyles.templateButton}
-              onClick={() => setSelectedTemplate(template.name)}
-            >
-              {selectedTemplate === template.name ? "Selected" : "Use Template"}
-            </button>
-          </div>
+                <p className={styles.templateDesc}>{template.description}</p>
+                <small className={styles.templatePreviewText}>{template.preview}</small>
+                <button type="button" className={styles.templateButton} onClick={() => setSelectedTemplate(template.name)}>
+                  {selectedTemplate === template.name ? "Selected" : "Use Template"}
+                </button>
+              </div>
             ))}
           </div>
         </section>
       </main>
-    </div>
+    </SiteChrome>
   );
 }
