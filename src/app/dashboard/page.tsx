@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireUserOrRedirect } from "@/lib/supabase/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import SignOutButton from "@/components/SignOutButton";
+import DashboardGreetingEditor from "./DashboardGreetingEditor";
 import styles from "./page.module.css";
 
 function formatDate(value: string) {
@@ -15,6 +16,10 @@ function formatDate(value: string) {
 export default async function DashboardPage() {
   const user = await requireUserOrRedirect();
   const supabase = await createSupabaseServerClient();
+  const displayName =
+    String(user.user_metadata?.display_name ?? user.user_metadata?.name ?? "").trim() ||
+    user.email?.split("@")[0] ||
+    "PathFinder user";
 
   const [draftsResult, analysesResult] = await Promise.all([
     supabase
@@ -37,14 +42,7 @@ export default async function DashboardPage() {
   return (
     <main className={styles.shell}>
       <header className={styles.hero}>
-        <div>
-          <span className={styles.kicker}>Personal dashboard</span>
-          <h1>Welcome back, {user.email ?? "PathFinder user"}.</h1>
-          <p>
-            This is your private workspace for resume drafts, analysis history, and quick jumps
-            back into the editor.
-          </p>
-        </div>
+        <DashboardGreetingEditor displayName={displayName} email={user.email ?? null} />
         <div className={styles.heroActions}>
           <Link href="/create-resume" className={styles.primaryButton}>
             New draft
