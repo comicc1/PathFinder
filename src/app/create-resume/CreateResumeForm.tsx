@@ -45,8 +45,9 @@ export default function CreateResumeForm({ initialDraft }: CreateResumeFormProps
     }
   };
 
-  const effectiveDraftId = initialDraft?.id || (draftState.success ? draftState.draftId : "");
-  const hasDraft = Boolean(effectiveDraftId);
+const effectiveDraftId =
+  initialDraft?.id || (draftState.success && "draftId" in draftState ? draftState.draftId : "");
+const hasDraft = Boolean(effectiveDraftId);
 
   return (
     <>
