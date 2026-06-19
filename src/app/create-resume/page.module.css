@@ -14,6 +14,22 @@
 .inlineError { background: rgba(239,68,68,0.12); color: #ffb8b8; }
 .inlineSuccess { background: rgba(70,235,160,0.12); color: #9ff2c9; }
 .button, .templateButton { min-height: 44px; border: 0; border-radius: 16px; background: linear-gradient(135deg, #46eba0, #0ca466); color: #03100b; font-weight: 900; }
+.formActions { display: flex; gap: 12px; flex-wrap: wrap; }
+.actionLink,
+.deleteButton {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+}
+.actionLink { background: rgba(70,235,160,0.12); color: #9ff2c9; border: 0; }
+.deleteButton { border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: #eef2f7; }
+.deleteButton:hover, .actionLink:hover { filter: brightness(1.05); }
 .quickStart { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .card { display: grid; gap: 16px; }
 .cardIcon, .templateIcon { width: 54px; height: 54px; display: grid; place-items: center; border-radius: 16px; background: rgba(70,235,160,0.12); color: #46eba0; font-weight: 900; }

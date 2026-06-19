@@ -1,10 +1,34 @@
 import Link from "next/link";
 import { requireUserOrRedirect } from "@/lib/supabase/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { deleteResumeDraft } from "../actions";
 import SignOutButton from "@/components/SignOutButton";
 import DashboardGreetingEditor from "./DashboardGreetingEditor";
 import styles from "./page.module.css";
 import SiteChrome from "@/components/SiteChrome";
+
+function getSupabaseErrorMessage(error: unknown) {
+  if (typeof error === "string") {
+    return error;
+  }
+
+  if (error && typeof error === "object") {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string") {
+      return message;
+    }
+  }
+
+  return error instanceof Error ? error.message : String(error);
+}
+
+function isMissingResumeTableError(error: unknown) {
+  const message = getSupabaseErrorMessage(error).toLowerCase();
+  return (
+    message.includes("public.resume_drafts") &&
+    (message.includes("schema cache") || message.includes("does not exist"))
+  );
+}
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en", {
@@ -26,6 +50,38 @@ export default async function DashboardPage() {
     supabase.from("resume_drafts").select("*").eq("user_id", user.id).order("updated_at", { ascending: false }).limit(8),
     supabase.from("resume_analyses").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(8),
   ]);
+
+  if (draftsResult.error && isMissingResumeTableError(draftsResult.error)) {
+    return (
+      <SiteChrome
+        title="Dashboard"
+        eyebrow="Personal workspace"
+        description="Track drafts, review recent feedback, and keep your resume workflow moving in one place."
+        primaryHref="/create-resume"
+        primaryLabel="New draft"
+        secondaryHref="/analyzer"
+        secondaryLabel="Run analysis"
+      >
+        <main className={styles.shell}>
+          <header className={styles.hero}>
+            <DashboardGreetingEditor displayName={displayName} email={user.email ?? null} />
+            <div className={styles.heroActions}>
+              <SignOutButton />
+            </div>
+          </header>
+
+          <section className={styles.panel}>
+            <div className={styles.emptyState}>
+              <p>
+                Supabase has not loaded the resume tables yet. Run
+                <code>supabase/schema.sql</code> against your project, then refresh this page.
+              </p>
+            </div>
+          </section>
+        </main>
+      </SiteChrome>
+    );
+  }
 
   const drafts = draftsResult.data ?? [];
   const analyses = analysesResult.data ?? [];
@@ -72,13 +128,26 @@ export default async function DashboardPage() {
               {drafts.map((draft) => (
                 <article key={draft.id} className={styles.recordCard}>
                   <div className={styles.recordTop}>
-                    <h3>{draft.title}</h3>
-                    <span>{formatDate(draft.updated_at)}</span>
+                    <div>
+                      <h3>{draft.title}</h3>
+                      <span>{formatDate(draft.updated_at)}</span>
+                    </div>
                   </div>
                   {draft.summary && <p>{draft.summary}</p>}
                   <div className={styles.metaRow}>
                     <span>{draft.template_name ?? "No template"}</span>
                     <span>{draft.skills ?? "No skills saved"}</span>
+                  </div>
+                  <div className={styles.recordActions}>
+                    <Link href={`/create-resume?draftId=${draft.id}`} className={styles.actionLink}>
+                      Edit draft
+                    </Link>
+                    <form action={deleteResumeDraft}>
+                      <input type="hidden" name="draftId" value={draft.id} />
+                      <button type="submit" className={styles.deleteButton}>
+                        Delete
+                      </button>
+                    </form>
                   </div>
                 </article>
               ))}

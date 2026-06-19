@@ -291,6 +291,42 @@
   font-size: 12px;
 }
 
+.recordActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.actionLink,
+.deleteButton {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.actionLink {
+  background: rgba(70, 235, 160, 0.12);
+  color: #9ff2c9;
+}
+
+.deleteButton {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #eef2f7;
+}
+
+.deleteButton:hover,
+.actionLink:hover {
+  filter: brightness(1.05);
+}
+
 .feedbackText {
   white-space: pre-wrap;
 }

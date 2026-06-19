@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const GROQ_MODEL = "llama-3.3-70b-versatile";
@@ -23,10 +24,16 @@ type DraftSuccess = {
   draftId: string;
 };
 
+type DeleteSuccess = {
+  success: true;
+  message: string;
+};
+
 export type AnalysisActionState = ActionError | AnalysisSuccess;
 export type DraftActionState =
   | ActionError
   | DraftSuccess
+  | DeleteSuccess
   | { success: false; error: string; draftId?: string };
 
 function getGroqApiKey() {
@@ -37,6 +44,25 @@ function getGroqApiKey() {
     );
   }
   return apiKey;
+}
+
+function getErrorMessage(error: unknown) {
+  if (typeof error === "string") {
+    return error;
+  }
+
+  if (error && typeof error === "object") {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string") {
+      return message;
+    }
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return String(error);
 }
 
 async function getAuthedUser() {
@@ -177,6 +203,34 @@ async function saveAnalysisHistory(params: {
   return data.id as string;
 }
 
+export async function getResumeDraftById(draftId: string) {
+  const authed = await getAuthedUser();
+  if (!authed || !draftId) {
+    return null;
+  }
+
+  const { data, error } = await authed.supabase
+    .from("resume_drafts")
+    .select("*")
+    .eq("id", draftId)
+    .eq("user_id", authed.user.id)
+    .single();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return data;
+}
+
+function isMissingResumeDraftTableError(error: unknown) {
+  const message = getErrorMessage(error).toLowerCase();
+  return (
+    message.includes("public.resume_drafts") &&
+    (message.includes("schema cache") || message.includes("does not exist"))
+  );
+}
+
 export async function saveResumeDraft(
   _state: DraftActionState | undefined,
   formData: FormData,
@@ -223,6 +277,14 @@ export async function saveResumeDraft(
       .single();
 
     if (error || !data) {
+      if (isMissingResumeDraftTableError(error)) {
+        return {
+          success: false,
+          error:
+            "Supabase has not been initialized for this app yet. Run supabase/schema.sql to create public.resume_drafts and public.resume_analyses, then try saving again.",
+        };
+      }
+
       return {
         success: false,
         error: error?.message || "Failed to update the draft.",
@@ -253,6 +315,14 @@ export async function saveResumeDraft(
     .single();
 
   if (error || !data) {
+    if (isMissingResumeDraftTableError(error)) {
+      return {
+        success: false,
+        error:
+          "Supabase has not been initialized for this app yet. Run supabase/schema.sql to create public.resume_drafts and public.resume_analyses, then try saving again.",
+      };
+    }
+
     return {
       success: false,
       error: error?.message || "Failed to save the draft.",
@@ -265,6 +335,50 @@ export async function saveResumeDraft(
     message: "Draft saved to your dashboard.",
     draftId: data.id,
   };
+}
+
+export async function deleteResumeDraft(
+  _state: DraftActionState | undefined,
+  formData: FormData,
+): Promise<DraftActionState> {
+  const draftId = String(formData.get("draftId") ?? "").trim();
+
+  if (!draftId) {
+    return { success: false, error: "Missing draft id." };
+  }
+
+  const authed = await getAuthedUser();
+  if (!authed) {
+    return {
+      success: false,
+      error: "Please sign in to delete drafts from your dashboard.",
+    };
+  }
+
+  const { error } = await authed.supabase
+    .from("resume_drafts")
+    .delete()
+    .eq("id", draftId)
+    .eq("user_id", authed.user.id);
+
+  if (error) {
+    if (isMissingResumeDraftTableError(error)) {
+      return {
+        success: false,
+        error:
+          "Supabase has not been initialized for this app yet. Run supabase/schema.sql to create public.resume_drafts and public.resume_analyses, then try deleting again.",
+      };
+    }
+
+    return {
+      success: false,
+      error: error.message || "Failed to delete the draft.",
+    };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/create-resume");
+  redirect("/dashboard");
 }
 
 export async function analyzeResume(formData: FormData): Promise<AnalysisActionState> {
