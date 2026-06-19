@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { requireUserOrRedirect } from "@/lib/supabase/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { deleteResumeDraft } from "../actions";
 import SignOutButton from "@/components/SignOutButton";
 import DashboardGreetingEditor from "./DashboardGreetingEditor";
+import DraftActions from "./DraftActions";
 import styles from "./page.module.css";
 import SiteChrome from "@/components/SiteChrome";
 
@@ -138,17 +138,7 @@ export default async function DashboardPage() {
                     <span>{draft.template_name ?? "No template"}</span>
                     <span>{draft.skills ?? "No skills saved"}</span>
                   </div>
-                  <div className={styles.recordActions}>
-                    <Link href={`/create-resume?draftId=${draft.id}`} className={styles.actionLink}>
-                      Edit draft
-                    </Link>
-                    <form action={deleteResumeDraft}>
-                      <input type="hidden" name="draftId" value={draft.id} />
-                      <button type="submit" className={styles.deleteButton}>
-                        Delete
-                      </button>
-                    </form>
-                  </div>
+                  <DraftActions draftId={draft.id} draftTitle={draft.title} />
                 </article>
               ))}
             </div>

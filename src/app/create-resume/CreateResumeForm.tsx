@@ -28,6 +28,7 @@ const templates = [
 export default function CreateResumeForm({ initialDraft }: CreateResumeFormProps) {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<string>(initialDraft?.templateName || "Modern");
   const [draftState, draftAction, draftPending] = useActionState(
     saveResumeDraft,
@@ -54,7 +55,7 @@ const hasDraft = Boolean(effectiveDraftId);
           </p>
         </div>
 
-        <form action={draftAction} className={styles.draftCard}>
+        <form action={draftAction} className={styles.draftCard} id="draft-editor-form">
           <input type="hidden" name="templateName" value={selectedTemplate} />
           <input type="hidden" name="draftId" value={effectiveDraftId} />
 
@@ -85,14 +86,44 @@ const hasDraft = Boolean(effectiveDraftId);
             {hasDraft ? (
               <button
                 className={styles.deleteButton}
-                type="submit"
-                formAction={deleteResumeDraft}
+                type="button"
+                onClick={() => setIsDeleteConfirmOpen(true)}
               >
                 Delete
               </button>
             ) : null}
           </div>
+
         </form>
+
+        {hasDraft && isDeleteConfirmOpen ? (
+          <div className={styles.deleteConfirm} role="alert" aria-live="polite">
+            <div className={styles.deleteConfirmCopy}>
+              <span className={styles.deleteConfirmKicker}>Confirm delete</span>
+              <h3>Delete this draft?</h3>
+              <p>
+                This will permanently remove <strong>{initialDraft?.title ?? "your draft"}</strong> from your dashboard and cannot be undone.
+              </p>
+            </div>
+
+            <div className={styles.deleteConfirmActions}>
+              <button
+                type="button"
+                className={styles.cancelDeleteButton}
+                onClick={() => setIsDeleteConfirmOpen(false)}
+              >
+                Keep draft
+              </button>
+
+              <form action={deleteResumeDraft}>
+                <input type="hidden" name="draftId" value={effectiveDraftId} />
+                <button type="submit" className={styles.confirmDeleteButton}>
+                  Yes, delete it
+                </button>
+              </form>
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <section className={styles.quickStart}>

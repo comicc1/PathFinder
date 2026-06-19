@@ -30,6 +30,66 @@
 .actionLink { background: rgba(70,235,160,0.12); color: #9ff2c9; border: 0; }
 .deleteButton { border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: #eef2f7; }
 .deleteButton:hover, .actionLink:hover { filter: brightness(1.05); }
+.deleteConfirm {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 184, 184, 0.18);
+  background:
+    radial-gradient(circle at top right, rgba(239, 68, 68, 0.12), transparent 30%),
+    rgba(255, 255, 255, 0.03);
+}
+.deleteConfirmCopy { display: grid; gap: 8px; }
+.deleteConfirmKicker {
+  color: #ffb8b8;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.deleteConfirmCopy h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+}
+.deleteConfirmCopy p {
+  margin: 0;
+  color: #c7ced8;
+  line-height: 1.6;
+}
+.deleteConfirmActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.cancelDeleteButton,
+.confirmDeleteButton {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+}
+.cancelDeleteButton {
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: #eef2f7;
+}
+.confirmDeleteButton {
+  border: 1px solid rgba(255, 184, 184, 0.18);
+  background: linear-gradient(135deg, rgba(239,68,68,0.22), rgba(185,28,28,0.34));
+  color: #ffdfdf;
+}
+.cancelDeleteButton:hover,
+.confirmDeleteButton:hover {
+  filter: brightness(1.05);
+}
 .quickStart { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .card { display: grid; gap: 16px; }
 .cardIcon, .templateIcon { width: 54px; height: 54px; display: grid; place-items: center; border-radius: 16px; background: rgba(70,235,160,0.12); color: #46eba0; font-weight: 900; }
