@@ -338,21 +338,17 @@ export async function saveResumeDraft(
 }
 
 export async function deleteResumeDraft(
-  _state: DraftActionState | undefined,
   formData: FormData,
-): Promise<DraftActionState> {
+): Promise<void> {
   const draftId = String(formData.get("draftId") ?? "").trim();
 
   if (!draftId) {
-    return { success: false, error: "Missing draft id." };
+    throw new Error("Missing draft id.");
   }
 
   const authed = await getAuthedUser();
   if (!authed) {
-    return {
-      success: false,
-      error: "Please sign in to delete drafts from your dashboard.",
-    };
+    throw new Error("Please sign in to delete drafts from your dashboard.");
   }
 
   const { error } = await authed.supabase
@@ -363,17 +359,12 @@ export async function deleteResumeDraft(
 
   if (error) {
     if (isMissingResumeDraftTableError(error)) {
-      return {
-        success: false,
-        error:
-          "Supabase has not been initialized for this app yet. Run supabase/schema.sql to create public.resume_drafts and public.resume_analyses, then try deleting again.",
-      };
+      throw new Error(
+        "Supabase has not been initialized for this app yet. Run supabase/schema.sql to create public.resume_drafts and public.resume_analyses, then try deleting again.",
+      );
     }
 
-    return {
-      success: false,
-      error: error.message || "Failed to delete the draft.",
-    };
+    throw new Error(error.message || "Failed to delete the draft.");
   }
 
   revalidatePath("/dashboard");

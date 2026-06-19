@@ -34,11 +34,6 @@ export default function CreateResumeForm({ initialDraft }: CreateResumeFormProps
     { success: false, error: "" } as DraftActionState,
   );
 
-  const [deleteState, deleteAction, deletePending] = useActionState(deleteResumeDraft, {
-    success: false,
-    error: "",
-  } as DraftActionState);
-
   const handleFileSelect = (file: File | null) => {
     if (file && file.type === "application/pdf") {
       setSelectedFile(file.name);
@@ -82,9 +77,6 @@ const hasDraft = Boolean(effectiveDraftId);
 
           {draftState.success === false && draftState.error ? <p className={styles.inlineError}>{draftState.error}</p> : null}
           {draftState.success ? <p className={styles.inlineSuccess}>{draftState.message}</p> : null}
-          {deleteState.success === false && deleteState.error ? <p className={styles.inlineError}>{deleteState.error}</p> : null}
-          {deleteState.success ? <p className={styles.inlineSuccess}>{deleteState.message}</p> : null}
-
           <div className={styles.formActions}>
             <button className={styles.actionLink} type="submit" disabled={draftPending}>
               {draftPending ? "Saving..." : hasDraft ? "Update draft" : "Save draft"}
@@ -94,10 +86,9 @@ const hasDraft = Boolean(effectiveDraftId);
               <button
                 className={styles.deleteButton}
                 type="submit"
-                formAction={deleteAction}
-                disabled={deletePending}
+                formAction={deleteResumeDraft}
               >
-                {deletePending ? "Deleting..." : "Delete"}
+                Delete
               </button>
             ) : null}
           </div>
