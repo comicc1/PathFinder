@@ -7,6 +7,7 @@
   --color-white: #FFFFFF;
   --color-dark: #05080d;
   --color-dark-soft: #0b111b;
+  --font-inter: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   
   --background: var(--color-bg);
   --foreground: var(--color-primary);

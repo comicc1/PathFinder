@@ -2,7 +2,6 @@ import Link from "next/link";
 import { requireUserOrRedirect } from "@/lib/supabase/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import SignOutButton from "@/components/SignOutButton";
-import DashboardGreetingEditor from "./DashboardGreetingEditor";
 import DraftActions from "./DraftActions";
 import styles from "./page.module.css";
 import SiteChrome from "@/components/SiteChrome";
@@ -41,8 +40,18 @@ function formatDate(value: string) {
 export default async function DashboardPage() {
   const user = await requireUserOrRedirect();
   const supabase = await createSupabaseServerClient();
+  const profileResult = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", user.id)
+    .maybeSingle();
   const displayName =
-    String(user.user_metadata?.display_name ?? user.user_metadata?.name ?? "").trim() ||
+    String(
+      profileResult.data?.username ??
+        user.user_metadata?.display_name ??
+        user.user_metadata?.name ??
+        "",
+    ).trim() ||
     user.email?.split("@")[0] ||
     "PathFinder user";
 
@@ -55,16 +64,28 @@ export default async function DashboardPage() {
     return (
       <SiteChrome
         title="Dashboard"
-        eyebrow="Personal workspace"
-        description="Track drafts, review recent feedback, and keep your resume workflow moving in one place."
         primaryHref="/create-resume"
-        primaryLabel="New draft"
+        primaryLabel="New Draft"
         secondaryHref="/analyzer"
-        secondaryLabel="Run analysis"
+        secondaryLabel="Analyze"
       >
         <main className={styles.shell}>
           <header className={styles.hero}>
-            <DashboardGreetingEditor displayName={displayName} email={user.email ?? null} />
+            <div className={styles.heroCopy}>
+              <p className={styles.kicker}>Profile</p>
+              <h1 className={styles.greeting}>
+                Welcome back, <span className={styles.name}>{displayName}</span>
+              </h1>
+              <p className={styles.heroText}>
+              </p>
+            </div>
+
+            <div className={styles.profileCard}>
+              <span className={styles.profileLabel}>Account</span>
+              <strong>{displayName}</strong>
+              <span>{user.email ?? "No email on file"}</span>
+            </div>
+
             <div className={styles.heroActions}>
               <SignOutButton />
             </div>
@@ -89,16 +110,30 @@ export default async function DashboardPage() {
   return (
     <SiteChrome
       title="Dashboard"
-      eyebrow="Personal workspace"
-      description="Track drafts, review recent feedback, and keep your resume workflow moving in one place."
       primaryHref="/create-resume"
-      primaryLabel="New draft"
+      primaryLabel="New Draft"
       secondaryHref="/analyzer"
-      secondaryLabel="Run analysis"
+      secondaryLabel="Analyze"
     >
       <main className={styles.shell}>
         <header className={styles.hero}>
-          <DashboardGreetingEditor displayName={displayName} email={user.email ?? null} />
+          <div className={styles.heroCopy}>
+            <p className={styles.kicker}>Profile</p>
+            <h1 className={styles.greeting}>
+              Welcome back, <span className={styles.name}>{displayName}</span>
+            </h1>
+            <p className={styles.heroText}>
+              Your username lives in Supabase, so the dashboard can use it everywhere without
+              hardcoded placeholders.
+            </p>
+          </div>
+
+          <div className={styles.profileCard}>
+            <span className={styles.profileLabel}>Account</span>
+            <strong>{displayName}</strong>
+            <span>{user.email ?? "No email on file"}</span>
+          </div>
+
           <div className={styles.heroActions}>
             <SignOutButton />
           </div>
@@ -107,7 +142,7 @@ export default async function DashboardPage() {
         <section className={styles.statsGrid}>
           <article className={styles.statCard}><span>Resume drafts</span><strong>{drafts.length}</strong></article>
           <article className={styles.statCard}><span>Saved analyses</span><strong>{analyses.length}</strong></article>
-          <article className={styles.statCard}><span>Signed in as</span><strong>{user.email ?? "Unknown"}</strong></article>
+          <article className={styles.statCard}><span>Username</span><strong>{displayName}</strong></article>
         </section>
 
         <section className={styles.panel}>

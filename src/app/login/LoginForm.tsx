@@ -2,7 +2,6 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import styles from "./page.module.css";
 import SiteChrome from "@/components/SiteChrome";
@@ -29,6 +28,7 @@ export default function LoginForm({
     setMessage(null);
 
     const formData = new FormData(event.currentTarget);
+    const username = String(formData.get("username") ?? "").trim();
     const email = String(formData.get("email") ?? "").trim();
     const password = String(formData.get("password") ?? "");
     if (!email || !password) {
@@ -37,10 +37,25 @@ export default function LoginForm({
       return;
     }
 
+    if (mode === "sign-up" && !username) {
+      setError("Choose a username before creating your account.");
+      setPending(false);
+      return;
+    }
+
     const supabase = createSupabaseBrowserClient();
     try {
       if (mode === "sign-up") {
-        const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              username,
+              display_name: username,
+            },
+          },
+        });
         if (signUpError) throw signUpError;
         if (data.session) {
           router.push(nextPath);
@@ -62,41 +77,58 @@ export default function LoginForm({
   }
 
   return (
-    <SiteChrome
-      title="Sign in"
-      eyebrow="Supabase auth"
-      description="Save drafts, keep analysis history, and sync your resume workflow across sessions."
-      primaryHref="/create-resume"
-      primaryLabel="Create account"
-      secondaryHref="/"
-      secondaryLabel="Home"
-      showNav={false}
-    >
-      <div className={styles.shell}>
+    <SiteChrome showNav={false}>
+      <div className={styles.container}>
         <div className={styles.card}>
-          <Link href="/" className={styles.backLink}>Back to PathFinder</Link>
-
-          <div className={styles.modeTabs}>
-            <button type="button" className={`${styles.tab} ${mode === "sign-in" ? styles.activeTab : ""}`} onClick={() => setMode("sign-in")}>Sign in</button>
-            <button type="button" className={`${styles.tab} ${mode === "sign-up" ? styles.activeTab : ""}`} onClick={() => setMode("sign-up")}>Create account</button>
-          </div>
+          <h1 className={styles.title}>{mode === "sign-in" ? "Sign In" : "Create Account"}</h1>
 
           <form className={styles.form} onSubmit={handleSubmit}>
-            <label className={styles.field}>
-              <span>Email</span>
-              <input name="email" type="email" autoComplete="email" placeholder="you@example.com" />
-            </label>
-            <label className={styles.field}>
-              <span>Password</span>
-              <input name="password" type="password" autoComplete={mode === "sign-in" ? "current-password" : "new-password"} placeholder="••••••••" />
-            </label>
+            {mode === "sign-up" ? (
+              <input
+                name="username"
+                type="text"
+                autoComplete="nickname"
+                placeholder="Username"
+                className={styles.input}
+              />
+            ) : null}
+            <input
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="Email"
+              className={styles.input}
+            />
+            <input
+              name="password"
+              type="password"
+              autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
+              placeholder="Password"
+              className={styles.input}
+            />
             {message && <p className={styles.success}>{message}</p>}
             {error && <p className={styles.error}>{error}</p>}
-            <button className={styles.submitButton} type="submit" disabled={pending}>{pending ? "Working..." : mode === "sign-in" ? "Sign in" : "Create account"}</button>
+
+            <button className={styles.submitButton} type="submit" disabled={pending}>
+              {pending ? "Working..." : mode === "sign-in" ? "Sign In" : "Create Account"}
+            </button>
           </form>
 
-          <div className={styles.footerNote}>
-            <p>Once you’re in, save a draft on Create Resume and review the saved history from your dashboard.</p>
+          <div className={styles.modeTabs}>
+            <button
+              type="button"
+              className={`${styles.tab} ${mode === "sign-in" ? styles.activeTab : ""}`}
+              onClick={() => setMode("sign-in")}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              className={`${styles.tab} ${mode === "sign-up" ? styles.activeTab : ""}`}
+              onClick={() => setMode("sign-up")}
+            >
+              Create Account
+            </button>
           </div>
         </div>
       </div>

@@ -4,8 +4,31 @@ import styles from "./Sidebar.module.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function Sidebar() {
+type SidebarProps = {
+  userName?: string | null;
+  userEmail?: string | null;
+};
+
+function getInitials(value: string) {
+  const parts = value
+    .split(/\s+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (parts.length === 0) {
+    return "PF";
+  }
+
+  return parts
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("")
+    .slice(0, 2);
+}
+
+export default function Sidebar({ userName, userEmail }: SidebarProps) {
   const pathname = usePathname();
+  const displayName = userName?.trim() || userEmail?.split("@")[0] || "PathFinder user";
+  const avatarText = getInitials(displayName);
   
   const isActive = (path: string) => {
     if (path === "/" && pathname === "/") return true;
@@ -36,10 +59,10 @@ export default function Sidebar() {
       </nav>
 
       <div className={styles.userProfile}>
-        <div className={styles.avatar}>JD</div>
+        <div className={styles.avatar}>{avatarText}</div>
         <div className={styles.userInfo}>
-          <span className={styles.userName}>John Doe</span>
-          <span className={styles.userEmail}>john@example.com</span>
+          <span className={styles.userName}>{displayName}</span>
+          <span className={styles.userEmail}>{userEmail ?? "No email on file"}</span>
         </div>
       </div>
     </aside>
