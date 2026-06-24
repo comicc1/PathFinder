@@ -7,7 +7,7 @@ export default async function Home() {
   const user = await getOptionalUser();
   const isGuest = !user;
   const primaryHref = isGuest ? "/login?mode=sign-up" : "/dashboard";
-  const primaryLabel = isGuest ? "Create Account" : "Dashboard";
+  const primaryLabel = isGuest ? "Sign Up" : "Dashboard";
 
   return (
     <div className={styles.landingPage}>
@@ -17,6 +17,11 @@ export default async function Home() {
         primaryHref={primaryHref}
         primaryLabel={primaryLabel}
       >
+        <nav className={styles.landingNav} aria-label="Landing">
+          <Link href="/analyzer">Analyzer</Link>
+          <Link href="/create-resume">Create Resume</Link>
+          <Link href="/dashboard">Dashboard</Link>
+        </nav>
         <section className={styles.hero}>
           <p className={styles.phrase}>One workspace for every resume.</p>
           <Link href={primaryHref} className={styles.openAppButton}>

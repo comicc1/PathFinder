@@ -50,7 +50,11 @@ export default function SiteChrome({
               {secondaryLabel}
             </Link>
           ) : null}
-          
+          {primaryHref && primaryLabel ? (
+            <Link href={primaryHref} className={styles.primaryButton}>
+              {primaryLabel}
+            </Link>
+          ) : null}
         </div>
       </header>
 
