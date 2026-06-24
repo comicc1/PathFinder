@@ -12,8 +12,8 @@
 .textareaLarge { min-height: 170px; }
 .inlineError, .inlineSuccess { margin: 0; padding: 12px 14px; border-radius: 16px; }
 .inlineError { background: rgba(239,68,68,0.12); color: #ffb8b8; }
-.inlineSuccess { background: rgba(70,235,160,0.12); color: #9ff2c9; }
-.button, .templateButton { min-height: 44px; border: 0; border-radius: 16px; background: linear-gradient(135deg, #46eba0, #0ca466); color: #03100b; font-weight: 900; }
+.inlineSuccess { background: rgba(79,124,255,0.12); color: #b9cbff; }
+.button, .templateButton { min-height: 44px; border: 0; border-radius: 16px; background: linear-gradient(135deg, #4f7cff, #2f5cff); color: #07111f; font-weight: 900; }
 .formActions { display: flex; gap: 12px; flex-wrap: wrap; }
 .actionLink,
 .deleteButton {
@@ -27,7 +27,7 @@
   font-size: 14px;
   cursor: pointer;
 }
-.actionLink { background: rgba(70,235,160,0.12); color: #9ff2c9; border: 0; }
+.actionLink { background: rgba(79,124,255,0.12); color: #b9cbff; border: 0; }
 .deleteButton { border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: #eef2f7; }
 .deleteButton:hover, .actionLink:hover { filter: brightness(1.05); }
 .deleteConfirm {
@@ -92,15 +92,16 @@
 }
 .quickStart { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .card { display: grid; gap: 16px; }
-.cardIcon, .templateIcon { width: 54px; height: 54px; display: grid; place-items: center; border-radius: 16px; background: rgba(70,235,160,0.12); color: #46eba0; font-weight: 900; }
-.uploadDropZone { padding: 18px; border-radius: 16px; border: 1px dashed rgba(70,235,160,0.3); background: rgba(70,235,160,0.04); }
-.dragging { background: rgba(70,235,160,0.08); }
+.cardIcon, .templateIcon { width: 54px; height: 54px; display: grid; place-items: center; border-radius: 16px; background: rgba(79,124,255,0.12); color: #8fb2ff; font-weight: 900; }
+.uploadDropZone { padding: 18px; border-radius: 16px; border: 1px dashed rgba(79,124,255,0.3); background: rgba(79,124,255,0.04); }
+.dragging { background: rgba(79,124,255,0.08); }
 .dropLabel { display: grid; justify-items: center; gap: 8px; text-align: center; color: #9aa6b6; }
+.dropIcon { font-size: 24px; line-height: 1; }
 .fileName { color: #eef2f7; font-weight: 700; }
 .hiddenFileInput { display: none; }
 .templatesSection { margin-bottom: 8px; }
 .templateGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .templateCard { display: grid; gap: 14px; }
-.templatePreview { height: 120px; border-radius: 16px; background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(70,235,160,0.08)); display: grid; place-items: center; }
+.templatePreview { height: 120px; border-radius: 16px; background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(79,124,255,0.08)); display: grid; place-items: center; }
 .templateButton { background: rgba(255,255,255,0.04); color: #eef2f7; border: 1px solid rgba(255,255,255,0.12); }
 @media (max-width: 900px) { .quickStart, .templateGrid { grid-template-columns: 1fr; } }

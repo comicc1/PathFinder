@@ -1,8 +1,9 @@
 import Link from "next/link";
+import LoopingBackgroundVideo from "./LoopingBackgroundVideo";
 import styles from "./SiteChrome.module.css";
 
 type SiteChromeProps = {
-  title: string;
+  title?: string;
   eyebrow?: string;
   description?: string;
   primaryHref?: string;
@@ -10,6 +11,7 @@ type SiteChromeProps = {
   secondaryHref?: string;
   secondaryLabel?: string;
   showNav?: boolean;
+  showHero?: boolean;
   children?: React.ReactNode;
 };
 
@@ -22,10 +24,12 @@ export default function SiteChrome({
   secondaryHref,
   secondaryLabel,
   showNav = true,
+  showHero = true,
   children,
 }: SiteChromeProps) {
   return (
     <div className={styles.shell}>
+      <LoopingBackgroundVideo />
       <header className={styles.header}>
         <Link href="/" className={styles.brand}>
           <span className={styles.brandMark}>PF</span>
@@ -55,11 +59,13 @@ export default function SiteChrome({
       </header>
 
       <main className={styles.main}>
-        <section className={styles.hero}>
-          {eyebrow ? <span className={styles.eyebrow}>{eyebrow}</span> : null}
-          <h1>{title}</h1>
-          {description ? <p>{description}</p> : null}
-        </section>
+        {showHero ? (
+          <section className={styles.hero}>
+            {eyebrow ? <span className={styles.eyebrow}>{eyebrow}</span> : null}
+            {title ? <h1>{title}</h1> : null}
+            {description ? <p>{description}</p> : null}
+          </section>
+        ) : null}
         {children}
       </main>
     </div>

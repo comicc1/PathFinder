@@ -14,15 +14,15 @@ export function CreateResumeIcon() {
       
       {/* Pencil icon */}
       <g transform="translate(30, 28)">
-        <circle cx="0" cy="0" r="7" fill="#FAB95B" opacity="0.2"/>
-        <path d="M -1 -3 L 2 0 L -1 3 Z" fill="#FAB95B"/>
-        <path d="M 0 -2 L 2.5 0.5 L 0 3 L -2 1" stroke="#FAB95B" strokeWidth="1" fill="none"/>
+        <circle cx="0" cy="0" r="7" fill="#4F7CFF" opacity="0.2"/>
+        <path d="M -1 -3 L 2 0 L -1 3 Z" fill="#4F7CFF"/>
+        <path d="M 0 -2 L 2.5 0.5 L 0 3 L -2 1" stroke="#4F7CFF" strokeWidth="1" fill="none"/>
       </g>
       
       <defs>
         <linearGradient id="paint0_linear" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#1A3263" stopOpacity="0.1"/>
-          <stop offset="100%" stopColor="#FAB95B" stopOpacity="0.1"/>
+          <stop offset="100%" stopColor="#4F7CFF" stopOpacity="0.1"/>
         </linearGradient>
       </defs>
     </svg>

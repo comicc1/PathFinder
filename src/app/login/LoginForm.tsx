@@ -9,9 +9,15 @@ import SiteChrome from "@/components/SiteChrome";
 
 type Mode = "sign-in" | "sign-up";
 
-export default function LoginForm({ nextPath }: { nextPath: string }) {
+export default function LoginForm({
+  nextPath,
+  initialMode = "sign-in",
+}: {
+  nextPath: string;
+  initialMode?: Mode;
+}) {
   const router = useRouter();
-  const [mode, setMode] = useState<Mode>("sign-in");
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);

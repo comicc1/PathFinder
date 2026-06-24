@@ -1,8 +1,8 @@
 :root {
   --color-primary: #eef2f7;
   --color-secondary: #9aa6b6;
-  --color-accent: #46eba0;
-  --color-accent-strong: #0ca466;
+  --color-accent: #4f7cff;
+  --color-accent-strong: #2f5cff;
   --color-bg: #05080d;
   --color-white: #FFFFFF;
   --color-dark: #05080d;
@@ -10,13 +10,6 @@
   
   --background: var(--color-bg);
   --foreground: var(--color-primary);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--color-primary);
-    --foreground: var(--color-bg);
-  }
 }
 
 html {

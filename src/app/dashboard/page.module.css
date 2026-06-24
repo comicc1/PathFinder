@@ -9,7 +9,7 @@
   padding: clamp(22px, 4vw, 28px);
   border-radius: 20px;
   background:
-    radial-gradient(circle at top right, rgba(25, 199, 122, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(79, 124, 255, 0.14), transparent 28%),
     rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
@@ -21,7 +21,7 @@
 }
 
 .kicker {
-  color: #46eba0;
+  color: #8fb2ff;
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.14em;
@@ -36,7 +36,7 @@
 }
 
 .heroName {
-  color: #9ff2c9;
+  color: #b9cbff;
 }
 
 .heroDescription {
@@ -92,9 +92,9 @@
 }
 
 .editButton:hover {
-  background: rgba(70, 235, 160, 0.12);
-  border-color: rgba(70, 235, 160, 0.28);
-  color: #9ff2c9;
+  background: rgba(79, 124, 255, 0.12);
+  border-color: rgba(79, 124, 255, 0.28);
+  color: #b9cbff;
 }
 
 .editIcon {
@@ -122,7 +122,7 @@
 }
 
 .nameInput:focus {
-  outline: 2px solid rgba(70, 235, 160, 0.28);
+  outline: 2px solid rgba(79, 124, 255, 0.3);
 }
 
 .nameEditorFooter {
@@ -150,12 +150,12 @@
   padding: 0 18px;
   border: 0;
   border-radius: 16px;
-  background: linear-gradient(135deg, #46eba0, #0ca466);
-  color: #03100b;
+  background: linear-gradient(135deg, #4f7cff, #2f5cff);
+  color: #07111f;
   font-weight: 900;
   font-size: 15px;
   cursor: pointer;
-  box-shadow: 0 16px 32px rgba(25, 199, 122, 0.24);
+  box-shadow: 0 16px 32px rgba(79, 124, 255, 0.24);
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
@@ -167,7 +167,7 @@
 .nameButton:hover:not(:disabled) {
   transform: translateY(-1px);
   filter: brightness(1.04);
-  box-shadow: 0 20px 36px rgba(25, 199, 122, 0.3);
+  box-shadow: 0 20px 36px rgba(79, 124, 255, 0.3);
 }
 
 .cancelButton {
@@ -196,7 +196,7 @@
 }
 
 .nameMessageSuccess {
-  color: #9ff2c9;
+  color: #b9cbff;
 }
 
 .heroActions {
@@ -286,8 +286,8 @@
 .metaRow span {
   padding: 6px 10px;
   border-radius: 16px;
-  background: rgba(70, 235, 160, 0.1);
-  color: #9ff2c9;
+  background: rgba(79, 124, 255, 0.1);
+  color: #b9cbff;
   font-size: 12px;
 }
 
@@ -406,7 +406,7 @@
 }
 
 .emptyState a {
-  color: #46eba0;
+  color: #8fb2ff;
   font-weight: 700;
 }
 

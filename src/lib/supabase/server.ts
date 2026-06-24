@@ -8,7 +8,7 @@ import type { Database } from "./types";
 function getSupabaseUrl() {
   const value = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
   if (!value) {
-    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL.");
+    return null;
   }
   try {
     const parsed = new URL(value);
@@ -23,17 +23,24 @@ function getSupabaseAnonKey() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() ||
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
   if (!value) {
-    throw new Error(
-      "Missing NEXT_PUBLIC_SUPABASE_ANON_KEY or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
-    );
+    return null;
   }
   return value;
 }
 
 export async function createSupabaseServerClient() {
+  const supabaseUrl = getSupabaseUrl();
+  const supabaseAnonKey = getSupabaseAnonKey();
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      "Missing Supabase environment variables. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY).",
+    );
+  }
+
   const cookieStore = await cookies();
 
-  return createServerClient<Database>(getSupabaseUrl(), getSupabaseAnonKey(), {
+  return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
@@ -52,6 +59,13 @@ export async function createSupabaseServerClient() {
 }
 
 export const getCurrentUser = cache(async () => {
+  const supabaseUrl = getSupabaseUrl();
+  const supabaseAnonKey = getSupabaseAnonKey();
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return null;
+  }
+
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.getUser();
 

@@ -6,7 +6,7 @@ import type { Database } from "@/lib/supabase/types";
 function getSupabaseUrl() {
   const value = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
   if (!value) {
-    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL.");
+    return null;
   }
   try {
     const parsed = new URL(value);
@@ -21,14 +21,19 @@ function getSupabaseAnonKey() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() ||
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
   if (!value) {
-    throw new Error(
-      "Missing NEXT_PUBLIC_SUPABASE_ANON_KEY or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
-    );
+    return null;
   }
   return value;
 }
 
 export async function proxy(request: NextRequest) {
+  const supabaseUrl = getSupabaseUrl();
+  const supabaseAnonKey = getSupabaseAnonKey();
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return NextResponse.next();
+  }
+
   const response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -36,8 +41,8 @@ export async function proxy(request: NextRequest) {
   });
 
   const supabase = createServerClient<Database>(
-    getSupabaseUrl(),
-    getSupabaseAnonKey(),
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {

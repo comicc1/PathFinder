@@ -1,10 +1,42 @@
 .shell {
+  position: relative;
+  isolation: isolate;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at top right, rgba(25, 199, 122, 0.14), transparent 26%),
-    radial-gradient(circle at bottom left, rgba(25, 199, 122, 0.08), transparent 30%),
-    linear-gradient(180deg, #05080d 0%, #101722 100%);
+  background: transparent;
   color: #ffffff;
+}
+.background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.backgroundVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(0.9) brightness(0.45) contrast(1.05);
+  transform: scale(1.03);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.backgroundVideoPrimary {
+  animation: videoFadePrimary 16s ease-in-out infinite;
+}
+.backgroundVideoSecondary {
+  animation: videoFadeSecondary 16s ease-in-out infinite;
+}
+.backgroundOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(79, 124, 255, 0.26), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(47, 92, 255, 0.16), transparent 32%),
+    linear-gradient(180deg, rgba(5, 8, 13, 0.55) 0%, rgba(5, 8, 13, 0.82) 100%);
 }
 .header {
   width: min(100%, 1240px);
@@ -20,22 +52,39 @@
   align-items: center;
   gap: 10px;
   color: #ffffff;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  text-transform: lowercase;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 .brandMark {
   width: 32px;
   height: 32px;
-  border-radius: 14px;
+  border-radius: 8px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #46eba0, #0ca466);
-  color: #03100b;
-  box-shadow: 0 0 28px rgba(25, 199, 122, 0.45);
+  background: linear-gradient(135deg, #4f7cff, #2f5cff);
+  color: #07111f;
+  box-shadow: 0 0 24px rgba(79, 124, 255, 0.35);
+  font-size: 13px;
+  font-weight: 850;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
 }
-.brandText { font-size: 18px; }
-.nav { display: flex; align-items: center; gap: 26px; color: #92a0b3; font-size: 11px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+.brandText {
+  font-size: 19px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  color: #92a0b3;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
 .nav a:hover { color: #ffffff; }
 .navSpacer { flex: 1; }
 .actions { display: flex; align-items: center; gap: 10px; }
@@ -45,25 +94,70 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
+  border-radius: 10px;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  transition: all 0.2s ease;
 }
-.primaryButton { background: linear-gradient(135deg, #46eba0, #0ca466); color: #03100b; box-shadow: 0 12px 30px rgba(25, 199, 122, 0.28); }
-.secondaryButton { border: 1px solid rgba(255, 255, 255, 0.28); color: #ffffff; background: rgba(255, 255, 255, 0.02); }
+.primaryButton {
+  background: linear-gradient(135deg, #4f7cff, #2f5cff);
+  color: #07111f;
+  box-shadow: 0 8px 20px rgba(79, 124, 255, 0.25);
+}
+.primaryButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(79, 124, 255, 0.35);
+  filter: brightness(1.08);
+}
+.secondaryButton {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.02);
+}
+.secondaryButton:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+}
 .main { width: min(100%, 1240px); margin: 0 auto; padding: 18px clamp(16px, 4vw, 32px) 56px; display: grid; gap: clamp(22px, 4vw, 32px); }
+.header,
+.main {
+  position: relative;
+  z-index: 1;
+}
 .hero { max-width: 720px; display: grid; gap: 14px; }
-.eyebrow { color: #46eba0; font-size: 11px; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; }
+.eyebrow { color: #8fb2ff; font-size: 11px; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; }
 .hero h1 { margin: 0; font-size: clamp(34px, 6vw, 64px); line-height: 0.98; text-transform: uppercase; letter-spacing: -0.02em; }
 .hero p { margin: 0; max-width: 62ch; color: #9aa6b6; line-height: 1.65; font-size: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  .backgroundVideo {
+    display: none;
+  }
+  .background {
+    background:
+      radial-gradient(circle at top right, rgba(79, 124, 255, 0.18), transparent 26%),
+      radial-gradient(circle at bottom left, rgba(47, 92, 255, 0.1), transparent 30%),
+      linear-gradient(180deg, #05080d 0%, #101722 100%);
+  }
+}
+@keyframes videoFadePrimary {
+  0%, 45% { opacity: 1; }
+  50%, 95% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes videoFadeSecondary {
+  0%, 45% { opacity: 0; }
+  50%, 95% { opacity: 1; }
+  100% { opacity: 0; }
+}
 @media (max-width: 860px) {
   .header { flex-wrap: wrap; }
   .nav { order: 3; width: 100%; justify-content: flex-start; flex-wrap: wrap; gap: 14px 20px; }
 }
 @media (max-width: 640px) {
   .main { padding-bottom: 36px; }
-  .actions { width: 100%; }
-  .primaryButton, .secondaryButton { flex: 1; }
+  .header .actions { width: auto; }
+  .header .primaryButton, .header .secondaryButton { flex: none; }
 }

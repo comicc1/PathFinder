@@ -6,8 +6,8 @@ export function ResumeAnalyzerIcon() {
       
       {/* Chart bars */}
       <rect x="14" y="28" width="6" height="16" rx="1" fill="#4F6FD8"/>
-      <rect x="25" y="18" width="6" height="26" rx="1" fill="#FAB95B"/>
-      <rect x="36" y="24" width="6" height="20" rx="1" fill="#10b981"/>
+      <rect x="25" y="18" width="6" height="26" rx="1" fill="#4F7CFF"/>
+      <rect x="36" y="24" width="6" height="20" rx="1" fill="#79A2FF"/>
       
       {/* Accent line */}
       <line x1="12" y1="46" x2="44" y2="46" stroke="#E8E2DB" strokeWidth="1" strokeLinecap="round"/>
@@ -15,7 +15,7 @@ export function ResumeAnalyzerIcon() {
       <defs>
         <linearGradient id="paint0_linear" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#1A3263" stopOpacity="0.1"/>
-          <stop offset="100%" stopColor="#FAB95B" stopOpacity="0.1"/>
+          <stop offset="100%" stopColor="#4F7CFF" stopOpacity="0.1"/>
         </linearGradient>
       </defs>
     </svg>
