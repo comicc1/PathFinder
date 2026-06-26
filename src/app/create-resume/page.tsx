@@ -18,10 +18,6 @@ export default async function CreateResumePage({ searchParams }: CreateResumePag
       title="Create Resume"
       eyebrow="Draft studio"
       description="Start with a template, save a draft, and sync it to your dashboard when you sign in."
-      primaryHref="/dashboard"
-      primaryLabel="Dashboard"
-      secondaryHref="/analyzer"
-      secondaryLabel="Analyzer"
     >
       <main>
         <CreateResumeForm

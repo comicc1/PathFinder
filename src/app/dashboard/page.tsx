@@ -62,13 +62,7 @@ export default async function DashboardPage() {
 
   if (draftsResult.error && isMissingResumeTableError(draftsResult.error)) {
     return (
-      <SiteChrome
-        title="Dashboard"
-        primaryHref="/create-resume"
-        primaryLabel="New Draft"
-        secondaryHref="/analyzer"
-        secondaryLabel="Analyze"
-      >
+      
         <main className={styles.shell}>
           <header className={styles.hero}>
             <div className={styles.heroCopy}>
@@ -80,14 +74,16 @@ export default async function DashboardPage() {
               </p>
             </div>
 
-            <div className={styles.profileCard}>
-              <span className={styles.profileLabel}>Account</span>
-              <strong>{displayName}</strong>
-              <span>{user.email ?? "No email on file"}</span>
-            </div>
+            <div className={styles.heroRail}>
+              <div className={styles.profileCard}>
+                <span className={styles.profileLabel}>Account</span>
+                <strong>{displayName}</strong>
+                <span>{user.email ?? "No email on file"}</span>
+              </div>
 
-            <div className={styles.heroActions}>
-              <SignOutButton />
+              <div className={styles.heroActions}>
+                <SignOutButton />
+              </div>
             </div>
           </header>
 
@@ -100,7 +96,7 @@ export default async function DashboardPage() {
             </div>
           </section>
         </main>
-      </SiteChrome>
+      
     );
   }
 
@@ -110,10 +106,6 @@ export default async function DashboardPage() {
   return (
     <SiteChrome
       title="Dashboard"
-      primaryHref="/create-resume"
-      primaryLabel="New Draft"
-      secondaryHref="/analyzer"
-      secondaryLabel="Analyze"
     >
       <main className={styles.shell}>
         <header className={styles.hero}>
@@ -128,14 +120,16 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          <div className={styles.profileCard}>
-            <span className={styles.profileLabel}>Account</span>
-            <strong>{displayName}</strong>
-            <span>{user.email ?? "No email on file"}</span>
-          </div>
+          <div className={styles.heroRail}>
+            <div className={styles.profileCard}>
+              <span className={styles.profileLabel}>Account</span>
+              <strong>{displayName}</strong>
+              <span>{user.email ?? "No email on file"}</span>
+            </div>
 
-          <div className={styles.heroActions}>
-            <SignOutButton />
+            <div className={styles.heroActions}>
+              <SignOutButton />
+            </div>
           </div>
         </header>
 

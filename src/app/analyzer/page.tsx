@@ -72,10 +72,6 @@ export default function AnalyzerPage() {
       title="Resume Analyzer"
       eyebrow="AI-powered review"
       description="Upload a resume PDF, extract the text, and get structured feedback that helps you tighten the story."
-      primaryHref="/create-resume"
-      primaryLabel="Create Resume"
-      secondaryHref="/dashboard"
-      secondaryLabel="Dashboard"
     >
       <main className={styles.main}>
         {saved && (
