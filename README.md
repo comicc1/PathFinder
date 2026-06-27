@@ -1,20 +1,20 @@
-# PathFinder 🚀
+# PathFinder 
 
 **PathFinder** is a next-generation, AI-powered resume builder and analysis platform designed to help job seekers optimize their resumes, pass ATS filters, and land their dream jobs. By combining the power of modern LLMs with a seamless user experience, PathFinder provides real-time feedback, readability scores, and actionable recommendations.
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
-- **🤖 AI Resume Analyzer**: Scan and review your resumes instantly. Get detailed feedback on grammar, impact, formatting, and keyword matching.
-- **✍️ Interactive Resume Builder**: Create, edit, and manage resume drafts within a sleek, intuitive editor.
-- **📊 User Dashboard**: Persist your draft resumes and scan histories securely. Track your optimization progress over time.
-- **🔐 Secure Authentication**: Integrated authentication powered by Supabase, ensuring your personal career data remains private and secure.
-- **📱 Fully Responsive Design**: Seamlessly transition from desktop to tablet and mobile screens with a polished, modern sticky navbar and navigation drawer.
+- **AI Resume Analyzer**: Scan and review your resumes instantly. Get detailed feedback on grammar, impact, formatting, and keyword matching.
+- **Interactive Resume Builder**: Create, edit, and manage resume drafts within a sleek, intuitive editor.
+- **User Dashboard**: Persist your draft resumes and scan histories securely. Track your optimization progress over time.
+- **Secure Authentication**: Integrated authentication powered by Supabase, ensuring your personal career data remains private and secure.
+- **Fully Responsive Design**: Seamlessly transition from desktop to tablet and mobile screens with a polished, modern sticky navbar and navigation drawer.
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Framework**: [Next.js 16 (App Router)](https://nextjs.org/) utilizing Turbopack for lightning-fast hot reloads.
 - **Library**: [React 19](https://react.dev/)
@@ -43,7 +43,7 @@
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 📋 Prerequisites
 
@@ -61,7 +61,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
 
 *Note: For backward compatibility, the application also accepts `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in place of the anon key.*
 
-### 🗄️ Database Setup
+### Database Setup
 
 1. Log into your [Supabase Dashboard](https://supabase.com/dashboard).
 2. Go to the **SQL Editor** in your project dashboard.
@@ -70,7 +70,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
    - `resume_analyses` table (stores scan feedback history).
 4. Verify Row-Level Security (RLS) policies are active to ensure users can only read/write their own records.
 
-### 🏃 Running Locally
+### Running Locally
 
 1. **Install Dependencies**:
    ```bash
