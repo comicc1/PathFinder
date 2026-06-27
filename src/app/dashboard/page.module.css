@@ -16,12 +16,6 @@
   align-items: start;
 }
 
-.heroRail {
-  display: grid;
-  gap: 16px;
-  justify-items: end;
-}
-
 .heroCopy {
   display: grid;
   gap: 12px;
@@ -92,6 +86,8 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
+  align-self: start;
+  width: 100%;
 }
 
 .statsGrid {
@@ -368,10 +364,6 @@
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
-  }
-
-  .heroRail {
-    justify-items: start;
   }
 
   .statsGrid {

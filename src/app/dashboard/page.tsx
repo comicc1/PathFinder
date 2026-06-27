@@ -133,9 +133,6 @@ export default async function DashboardPage() {
             <h1 className={styles.greeting}>
               Welcome back, <span className={styles.name}>{displayName}</span>
             </h1>
-            <p className={styles.heroText}>
-              Your account details and professional analysis metrics are synced directly to Supabase.
-            </p>
           </div>
 
           <div className={styles.heroRail}>
