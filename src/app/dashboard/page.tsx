@@ -2,7 +2,6 @@ import Link from "next/link";
 import { requireUserOrRedirect } from "@/lib/supabase/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import SignOutButton from "@/components/SignOutButton";
-import DraftActions from "./DraftActions";
 import styles from "./page.module.css";
 import SiteChrome from "@/components/SiteChrome";
 
@@ -24,7 +23,7 @@ function getSupabaseErrorMessage(error: unknown) {
 function isMissingResumeTableError(error: unknown) {
   const message = getSupabaseErrorMessage(error).toLowerCase();
   return (
-    message.includes("public.resume_drafts") &&
+    (message.includes("public.interview_sessions") || message.includes("public.resume_analyses")) &&
     (message.includes("schema cache") || message.includes("does not exist"))
   );
 }
@@ -35,6 +34,13 @@ function formatDate(value: string) {
     day: "numeric",
     year: "numeric",
   }).format(new Date(value));
+}
+
+interface SessionData {
+  id: string;
+  created_at: string;
+  questions: Array<{ id: string; text: string }>;
+  resume_analyses?: { resume_title: string } | null;
 }
 
 export default async function DashboardPage() {
@@ -55,14 +61,31 @@ export default async function DashboardPage() {
     user.email?.split("@")[0] ||
     "PathFinder user";
 
-  const [draftsResult, analysesResult] = await Promise.all([
-    supabase.from("resume_drafts").select("*").eq("user_id", user.id).order("updated_at", { ascending: false }).limit(8),
-    supabase.from("resume_analyses").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(8),
+  const [sessionsResult, analysesResult] = await Promise.all([
+    supabase
+      .from("interview_sessions")
+      .select(`
+        id,
+        created_at,
+        questions,
+        resume_analyses (
+          resume_title
+        )
+      `)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(8),
+    supabase
+      .from("resume_analyses")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(8),
   ]);
 
-  if (draftsResult.error && isMissingResumeTableError(draftsResult.error)) {
+  if (sessionsResult.error && isMissingResumeTableError(sessionsResult.error)) {
     return (
-      
+      <SiteChrome title="Dashboard">
         <main className={styles.shell}>
           <header className={styles.hero}>
             <div className={styles.heroCopy}>
@@ -70,8 +93,6 @@ export default async function DashboardPage() {
               <h1 className={styles.greeting}>
                 Welcome back, <span className={styles.name}>{displayName}</span>
               </h1>
-              <p className={styles.heroText}>
-              </p>
             </div>
 
             <div className={styles.heroRail}>
@@ -90,23 +111,21 @@ export default async function DashboardPage() {
           <section className={styles.panel}>
             <div className={styles.emptyState}>
               <p>
-                Supabase has not loaded the resume tables yet. Run
+                Supabase has not loaded the interview tables yet. Run
                 <code>supabase/schema.sql</code> against your project, then refresh this page.
               </p>
             </div>
           </section>
         </main>
-      
+      </SiteChrome>
     );
   }
 
-  const drafts = draftsResult.data ?? [];
+  const sessions = (sessionsResult.data ?? []) as unknown as SessionData[];
   const analyses = analysesResult.data ?? [];
 
   return (
-    <SiteChrome
-      title="Dashboard"
-    >
+    <SiteChrome title="Dashboard">
       <main className={styles.shell}>
         <header className={styles.hero}>
           <div className={styles.heroCopy}>
@@ -115,8 +134,7 @@ export default async function DashboardPage() {
               Welcome back, <span className={styles.name}>{displayName}</span>
             </h1>
             <p className={styles.heroText}>
-              Your username lives in Supabase, so the dashboard can use it everywhere without
-              hardcoded placeholders.
+              Your account details and professional analysis metrics are synced directly to Supabase.
             </p>
           </div>
 
@@ -134,40 +152,51 @@ export default async function DashboardPage() {
         </header>
 
         <section className={styles.statsGrid}>
-          <article className={styles.statCard}><span>Resume drafts</span><strong>{drafts.length}</strong></article>
-          <article className={styles.statCard}><span>Saved analyses</span><strong>{analyses.length}</strong></article>
-          <article className={styles.statCard}><span>Username</span><strong>{displayName}</strong></article>
+          <article className={styles.statCard}>
+            <span>Practice Sessions</span>
+            <strong>{sessions.length}</strong>
+          </article>
+          <article className={styles.statCard}>
+            <span>Saved Analyses</span>
+            <strong>{analyses.length}</strong>
+          </article>
+          <article className={styles.statCard}>
+            <span>Username</span>
+            <strong>{displayName}</strong>
+          </article>
         </section>
 
         <section className={styles.panel}>
           <div className={styles.panelHeader}>
             <div>
-              <h2>Your resumes</h2>
-              <p>Drafts saved from the Create Resume flow.</p>
+              <h2>Interview Practice History</h2>
+              <p>Tailored behavioral simulator sessions.</p>
             </div>
           </div>
 
-          {drafts.length === 0 ? (
+          {sessions.length === 0 ? (
             <div className={styles.emptyState}>
-              <p>No drafts yet. Start one and it will appear here.</p>
-              <Link href="/create-resume">Create your first draft</Link>
+              <p>No practice sessions yet. Upload a resume to start practicing.</p>
+              <Link href="/analyzer">Start mock interview</Link>
             </div>
           ) : (
             <div className={styles.listGrid}>
-              {drafts.map((draft) => (
-                <article key={draft.id} className={styles.recordCard}>
+              {sessions.map((session) => (
+                <article key={session.id} className={styles.recordCard}>
                   <div className={styles.recordTop}>
                     <div>
-                      <h3>{draft.title}</h3>
-                      <span>{formatDate(draft.updated_at)}</span>
+                      <h3>Practice: {session.resume_analyses?.resume_title || "Untitled Resume"}</h3>
+                      <span>{formatDate(session.created_at)}</span>
                     </div>
                   </div>
-                  {draft.summary && <p>{draft.summary}</p>}
-                  <div className={styles.metaRow}>
-                    <span>{draft.template_name ?? "No template"}</span>
-                    <span>{draft.skills ?? "No skills saved"}</span>
+                  <p style={{ fontSize: "14px", color: "var(--color-secondary)", marginTop: "8px" }}>
+                    {session.questions ? `${session.questions.length} custom recruiter questions generated.` : "Custom recruiter questions generated."}
+                  </p>
+                  <div className={styles.recordActions} style={{ marginTop: "16px" }}>
+                    <Link href="/analyzer" className={styles.actionLink} style={{ color: "var(--color-accent)", fontWeight: "bold" }}>
+                      Resume practice
+                    </Link>
                   </div>
-                  <DraftActions draftId={draft.id} draftTitle={draft.title} />
                 </article>
               ))}
             </div>

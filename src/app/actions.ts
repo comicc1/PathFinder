@@ -16,6 +16,7 @@ type AnalysisSuccess = {
   feedback: string;
   saved: boolean;
   analysisId?: string;
+  resumeText?: string;
 };
 
 type DraftSuccess = {
@@ -179,14 +180,12 @@ async function saveAnalysisHistory(params: {
   resumeTitle: string;
   resumeText: string;
   feedback: string;
-  draftId?: string | null;
 }) {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("resume_analyses")
     .insert({
       user_id: params.userId,
-      draft_id: params.draftId ?? null,
       resume_title: params.resumeTitle,
       resume_text: params.resumeText,
       feedback: params.feedback,
@@ -203,178 +202,141 @@ async function saveAnalysisHistory(params: {
   return data.id as string;
 }
 
-export async function getResumeDraftById(draftId: string) {
-  const authed = await getAuthedUser();
-  if (!authed || !draftId) {
-    return null;
-  }
+export async function generateInterviewQuestions(analysisId: string | null, resumeText: string) {
+  const apiKey = getGroqApiKey();
+  const prompt = `Resume Text:\n${resumeText}`;
 
-  const { data, error } = await authed.supabase
-    .from("resume_drafts")
-    .select("*")
-    .eq("id", draftId)
-    .eq("user_id", authed.user.id)
-    .single();
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        response_format: { type: "json_object" },
+        messages: [
+          {
+            role: "system",
+            content: "You are a recruiter. Generate 5 behavioral interview questions based on the resume text. Return a JSON object with a key 'questions' containing an array of objects, each with 'id' (string) and 'text' (string)."
+          },
+          { role: "user", content: prompt }
+        ]
+      })
+    });
 
-  if (error || !data) {
-    return null;
-  }
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Groq API error ${response.status}: ${errorBody}`);
+    }
 
-  return data;
-}
-
-function isMissingResumeDraftTableError(error: unknown) {
-  const message = getErrorMessage(error).toLowerCase();
-  return (
-    message.includes("public.resume_drafts") &&
-    (message.includes("schema cache") || message.includes("does not exist"))
-  );
-}
-
-export async function saveResumeDraft(
-  _state: DraftActionState | undefined,
-  formData: FormData,
-): Promise<DraftActionState> {
-  const title = String(formData.get("title") ?? "").trim();
-  const summary = String(formData.get("summary") ?? "").trim();
-  const content = String(formData.get("content") ?? "").trim();
-  const skills = String(formData.get("skills") ?? "").trim();
-  const templateName = String(formData.get("templateName") ?? "").trim();
-  const draftId = String(formData.get("draftId") ?? "").trim();
-
-  if (!title) {
-    return { success: false, error: "Add a title before saving your draft." };
-  }
-
-  if (!content) {
-    return { success: false, error: "Add some resume content before saving." };
-  }
-
-  const authed = await getAuthedUser();
-  if (!authed) {
-    return {
-      success: false,
-      error: "Please sign in to save drafts to your dashboard.",
-    };
-  }
-
-  const payload = {
-    title,
-    summary: summary || null,
-    content,
-    skills: skills || null,
-    template_name: templateName || null,
-    updated_at: new Date().toISOString(),
-  };
-
-  if (draftId) {
-    const { data, error } = await authed.supabase
-      .from("resume_drafts")
-      .update(payload)
-      .eq("id", draftId)
-      .eq("user_id", authed.user.id)
-      .select("id")
-      .single();
-
-    if (error || !data) {
-      if (isMissingResumeDraftTableError(error)) {
-        return {
-          success: false,
-          error:
-            "Supabase has not been initialized for this app yet. Run supabase/schema.sql to create public.resume_drafts and public.resume_analyses, then try saving again.",
-        };
+    const data = await response.json();
+    const parsed = JSON.parse(data.choices[0].message.content);
+    
+    // Save to Database (only if logged in and analysisId is present)
+    const authed = await getAuthedUser();
+    let sessionId = null;
+    if (authed?.supabase && authed?.user && analysisId) {
+      try {
+        const { data: sessionData, error: dbError } = await authed.supabase
+          .from("interview_sessions")
+          .insert({
+            user_id: authed.user.id,
+            analysis_id: analysisId,
+            questions: parsed.questions
+          })
+          .select("id")
+          .single();
+        if (dbError) {
+          console.error("Database error saving session:", dbError.message);
+        } else {
+          sessionId = sessionData?.id || null;
+        }
+      } catch (dbErr) {
+        console.error("Exception saving session to database:", dbErr);
       }
-
-      return {
-        success: false,
-        error: error?.message || "Failed to update the draft.",
-      };
     }
 
-    revalidatePath("/dashboard");
-    return {
-      success: true,
-      message: "Draft updated and synced to your dashboard.",
-      draftId: data.id,
-    };
+    return { success: true, sessionId, questions: parsed.questions };
+  } catch (error) {
+    return { success: false, error: getErrorMessage(error) };
   }
-
-  const { data, error } = await authed.supabase
-    .from("resume_drafts")
-    .insert({
-      user_id: authed.user.id,
-      title,
-      summary: summary || null,
-      content,
-      skills: skills || null,
-      template_name: templateName || null,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    })
-    .select("id")
-    .single();
-
-  if (error || !data) {
-    if (isMissingResumeDraftTableError(error)) {
-      return {
-        success: false,
-        error:
-          "Supabase has not been initialized for this app yet. Run supabase/schema.sql to create public.resume_drafts and public.resume_analyses, then try saving again.",
-      };
-    }
-
-    return {
-      success: false,
-      error: error?.message || "Failed to save the draft.",
-    };
-  }
-
-  revalidatePath("/dashboard");
-  return {
-    success: true,
-    message: "Draft saved to your dashboard.",
-    draftId: data.id,
-  };
 }
 
-export async function deleteResumeDraft(
-  formData: FormData,
-): Promise<void> {
-  const draftId = String(formData.get("draftId") ?? "").trim();
+export async function evaluateInterviewAnswer({
+  sessionId,
+  questionId,
+  questionText,
+  userAnswer
+}: {
+  sessionId: string | null;
+  questionId: string;
+  questionText: string;
+  userAnswer: string;
+}) {
+  const apiKey = getGroqApiKey();
 
-  if (!draftId) {
-    throw new Error("Missing draft id.");
-  }
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        response_format: { type: "json_object" },
+        messages: [
+          {
+            role: "system",
+            content: "You are an interview coach. Evaluate the answer against the STAR method. Return a JSON object with: 'score' (number), 'strengths' (array of strings), 'weaknesses' (array of strings), 'suggestions' (string)."
+          },
+          {
+            role: "user",
+            content: `Question: ${questionText}\nCandidate Answer: ${userAnswer}`
+          }
+        ]
+      })
+    });
 
-  const authed = await getAuthedUser();
-  if (!authed) {
-    throw new Error("Please sign in to delete drafts from your dashboard.");
-  }
-
-  const { error } = await authed.supabase
-    .from("resume_drafts")
-    .delete()
-    .eq("id", draftId)
-    .eq("user_id", authed.user.id);
-
-  if (error) {
-    if (isMissingResumeDraftTableError(error)) {
-      throw new Error(
-        "Supabase has not been initialized for this app yet. Run supabase/schema.sql to create public.resume_drafts and public.resume_analyses, then try deleting again.",
-      );
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Groq API error ${response.status}: ${errorBody}`);
     }
 
-    throw new Error(error.message || "Failed to delete the draft.");
-  }
+    const data = await response.json();
+    const evaluation = JSON.parse(data.choices[0].message.content);
 
-  revalidatePath("/dashboard");
-  revalidatePath("/create-resume");
-  redirect("/dashboard");
+    // Save Response to Database if logged in and sessionId is present
+    const authed = await getAuthedUser();
+    if (authed?.supabase && sessionId) {
+      try {
+        const { error: dbError } = await authed.supabase
+          .from("interview_responses")
+          .insert({
+            session_id: sessionId,
+            question_id: questionId,
+            question_text: questionText,
+            user_answer: userAnswer,
+            evaluation
+          });
+        if (dbError) {
+          console.error("Database error saving response:", dbError.message);
+        }
+      } catch (dbErr) {
+        console.error("Exception saving response to database:", dbErr);
+      }
+    }
+
+    return { success: true, evaluation };
+  } catch (error) {
+    return { success: false, error: getErrorMessage(error) };
+  }
 }
 
 export async function analyzeResume(formData: FormData): Promise<AnalysisActionState> {
   const resumeLabel = String(formData.get("resumeTitle") ?? "").trim();
-  const draftId = String(formData.get("draftId") ?? "").trim();
   const clientText = formData.get("resumeText") as string | null;
 
   let resumeText = clientText?.trim() || "";
@@ -435,11 +397,10 @@ export async function analyzeResume(formData: FormData): Promise<AnalysisActionS
       resumeTitle: title,
       resumeText,
       feedback,
-      draftId: draftId || null,
     });
 
     revalidatePath("/dashboard");
-    return { success: true, feedback, saved: true, analysisId };
+    return { success: true, feedback, saved: true, analysisId, resumeText };
   } catch {
     return { success: true, feedback, saved: false };
   }

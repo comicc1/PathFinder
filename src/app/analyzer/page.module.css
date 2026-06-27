@@ -280,3 +280,93 @@
     grid-template-columns: 1fr;
   }
 }
+
+.tabContainer {
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+.tabButton {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-secondary);
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.tabButton:hover:not(:disabled) {
+  color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tabButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.activeTab {
+  color: var(--color-white);
+  background: rgba(79, 124, 255, 0.15) !important;
+  border-color: rgba(79, 124, 255, 0.3) !important;
+}
+
+.ctaCard {
+  background: rgba(79, 124, 255, 0.06);
+  border: 1px solid rgba(79, 124, 255, 0.2);
+  border-radius: 14px;
+  padding: 24px;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ctaCard h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+
+.ctaCard p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-secondary);
+  margin: 0;
+}
+
+.ctaButton {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-strong));
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(79, 124, 255, 0.2);
+  transition: all 0.2s;
+}
+
+.ctaButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(79, 124, 255, 0.3);
+}
+
+.ctaButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.simulatorSection {
+  width: 100%;
+}
+

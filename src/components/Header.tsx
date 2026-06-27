@@ -55,7 +55,6 @@ export default function Header({
         {showNav ? (
           <nav className={styles.nav} aria-label="Primary">
             <Link href="/analyzer">Analyzer</Link>
-            <Link href="/create-resume">Create Resume</Link>
             <Link href="/dashboard">Dashboard</Link>
           </nav>
         ) : (
@@ -104,9 +103,6 @@ export default function Header({
           <nav className={styles.mobileNav} aria-label="Mobile">
             <Link href="/analyzer" onClick={() => setIsMenuOpen(false)}>
               Analyzer
-            </Link>
-            <Link href="/create-resume" onClick={() => setIsMenuOpen(false)}>
-              Create Resume
             </Link>
             <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
               Dashboard
