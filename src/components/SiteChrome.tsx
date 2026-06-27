@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Header from "./Header";
 import LoopingBackgroundVideo from "./LoopingBackgroundVideo";
 import styles from "./SiteChrome.module.css";
 
@@ -30,33 +30,13 @@ export default function SiteChrome({
   return (
     <div className={styles.shell}>
       <LoopingBackgroundVideo />
-      <header className={styles.header}>
-        <Link href="/" className={styles.brand}>
-          <span className={styles.brandMark}>PF</span>
-          <span className={styles.brandText}>PathFinder</span>
-        </Link>
-        {showNav ? (
-          <nav className={styles.nav} aria-label="Primary">
-            <Link href="/analyzer">Analyzer</Link>
-            <Link href="/create-resume">Create Resume</Link>
-            <Link href="/dashboard">Dashboard</Link>
-          </nav>
-        ) : (
-          <div className={styles.navSpacer} />
-        )}
-        <div className={styles.actions}>
-          {secondaryHref && secondaryLabel ? (
-            <Link href={secondaryHref} className={styles.secondaryButton}>
-              {secondaryLabel}
-            </Link>
-          ) : null}
-          {primaryHref && primaryLabel ? (
-            <Link href={primaryHref} className={styles.primaryButton}>
-              {primaryLabel}
-            </Link>
-          ) : null}
-        </div>
-      </header>
+      <Header
+        showNav={showNav}
+        primaryHref={primaryHref}
+        primaryLabel={primaryLabel}
+        secondaryHref={secondaryHref}
+        secondaryLabel={secondaryLabel}
+      />
 
       <main className={styles.main}>
         {showHero ? (

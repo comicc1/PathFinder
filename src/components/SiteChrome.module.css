@@ -38,10 +38,23 @@
     radial-gradient(circle at bottom left, rgba(47, 92, 255, 0.16), transparent 32%),
     linear-gradient(180deg, rgba(5, 8, 13, 0.55) 0%, rgba(5, 8, 13, 0.82) 100%);
 }
+.headerWrapper {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
+  background: rgba(5, 8, 13, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color 0.3s, border-color 0.3s;
+}
 .header {
   width: min(100%, 1240px);
   margin: 0 auto;
-  padding: 22px clamp(16px, 4vw, 32px);
+  padding: 16px clamp(16px, 4vw, 32px);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -69,20 +82,12 @@
   font-weight: 850;
   letter-spacing: -0.01em;
   text-transform: uppercase;
-  position: fixed; 
-  left: 20px;     
-  top: 20px;       
-  z-index: 1000;  
 }
 
 .brandText {
   font-size: 19px;
   font-weight: 750;
   letter-spacing: -0.03em;
-  position: fixed; 
-  left: 65px;      
-  top: 23px;      
-  z-index: 1000;
 }
 .nav {
   display: flex;
@@ -115,10 +120,6 @@
   background: linear-gradient(135deg, #4f7cff, #2f5cff);
   color: #07111f;
   box-shadow: 0 8px 20px rgba(79, 124, 255, 0.25);
-  position: fixed; 
-  right: 20px;     
-  top: 20px;       
-  z-index: 1000;  
 }
 .primaryButton:hover {
   transform: translateY(-1px);
@@ -134,8 +135,105 @@
   border-color: rgba(255, 255, 255, 0.4);
   background: rgba(255, 255, 255, 0.05);
 }
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+.hamburger:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.hamburgerActive {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.menuIcon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+.mobileDrawer {
+  position: fixed;
+  top: 68px; /* Height of header */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(5, 8, 13, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 999;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.mobileNav a {
+  color: #92a0b3;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: color 0.2s, padding-left 0.2s;
+}
+.mobileNav a:hover {
+  color: #ffffff;
+  padding-left: 4px;
+}
+.mobileActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 32px;
+}
+.mobilePrimaryButton,
+.mobileSecondaryButton {
+  min-height: 44px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+.mobilePrimaryButton {
+  background: linear-gradient(135deg, #4f7cff, #2f5cff);
+  color: #07111f;
+  box-shadow: 0 8px 20px rgba(79, 124, 255, 0.25);
+}
+.mobileSecondaryButton {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.02);
+}
 .main { width: min(100%, 1240px); margin: 0 auto; padding: 18px clamp(16px, 4vw, 32px) 56px; display: grid; gap: clamp(22px, 4vw, 32px); }
-.header,
 .main {
   position: relative;
   z-index: 1;
@@ -165,12 +263,29 @@
   50%, 95% { opacity: 1; }
   100% { opacity: 0; }
 }
-@media (max-width: 860px) {
-  .header { flex-wrap: wrap; }
-  .nav { order: 3; width: 100%; justify-content: flex-start; flex-wrap: wrap; gap: 14px 20px; }
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+  .hamburger {
+    display: block;
+  }
+  .secondaryButton {
+    display: none;
+  }
+  .primaryButton {
+    padding: 0 12px;
+    font-size: 10px;
+    min-height: 36px;
+  }
 }
 @media (max-width: 640px) {
-  .main { padding-bottom: 36px; }
-  .header .actions { width: auto; }
-  .header .primaryButton, .header .secondaryButton { flex: none; }
+  .main {
+    padding-bottom: 36px;
+  }
+}
+@media (max-width: 480px) {
+  .primaryButton {
+    display: none;
+  }
 }
